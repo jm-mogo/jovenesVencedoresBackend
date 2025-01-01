@@ -1,7 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const getAllTeens = async () => {
-    const teens = await prisma.teen.findMany();
+    const teens = await prisma.teen.findMany({
+        select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+        },
+    });
     return teens;
 };
 const getTeenById = async (teenId) => {
@@ -36,5 +42,18 @@ const createTeen = async (firstName, lastName, dateOfBirth, gender, phoneNumber,
         return err;
     }
 };
-export { getAllTeens, getTeenById, createTeen };
+const deleteTeenById = async (teenId) => {
+    try {
+        const teenDeleted = await prisma.teen.delete({
+            where: {
+                id: teenId,
+            },
+        });
+        return teenDeleted;
+    }
+    catch (err) {
+        return err;
+    }
+};
+export { getAllTeens, getTeenById, createTeen, deleteTeenById };
 //# sourceMappingURL=teenController.js.map

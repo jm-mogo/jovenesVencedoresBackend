@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, validationResult } from "express-validator";
-import { createTeen, getAllTeens, getTeenById, } from "../controllers/teenController.js";
+import { createTeen, deleteTeenById, getAllTeens, getTeenById, } from "../controllers/teenController.js";
 const teenRouter = Router();
 teenRouter.get("/", async (req, res) => {
     const teens = await getAllTeens();
@@ -10,6 +10,19 @@ teenRouter.get("/:id", async (req, res) => {
     const teenId = Number(req.params.id);
     const teen = await getTeenById(teenId);
     res.json({ teen });
+});
+teenRouter.delete("/:id", async (req, res) => {
+    const teenId = Number(req.params.id);
+    try {
+        const deletedTeen = await deleteTeenById(teenId);
+        res.status(201).json({
+            message: "Teen deleted succesfully",
+            teen: deletedTeen,
+        });
+    }
+    catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
 });
 teenRouter.post("/", [
     body("firstName").notEmpty().withMessage("First name is required"),

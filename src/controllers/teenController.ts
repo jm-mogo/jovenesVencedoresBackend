@@ -3,7 +3,13 @@ import { Gender, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const getAllTeens = async () => {
-    const teens = await prisma.teen.findMany();
+    const teens = await prisma.teen.findMany({
+        select: {
+            firstName: true,
+            lastName: true,
+            id: true,
+        },
+    });
     return teens;
 };
 
@@ -47,4 +53,17 @@ const createTeen = async (
     }
 };
 
-export { getAllTeens, getTeenById, createTeen };
+const deleteTeenById = async (teenId: number) => {
+    try {
+        const teenDeleted = await prisma.teen.delete({
+            where: {
+                id: teenId,
+            },
+        });
+        return teenDeleted;
+    } catch (err) {
+        return err;
+    }
+};
+
+export { getAllTeens, getTeenById, createTeen, deleteTeenById };
