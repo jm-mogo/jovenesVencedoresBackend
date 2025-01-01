@@ -12,6 +12,9 @@ const getParentById = async (parentId: number) => {
             where: {
                 id: parentId,
             },
+            include: {
+                teens: true,
+            },
         });
         return parent;
     } catch (err) {
@@ -19,4 +22,36 @@ const getParentById = async (parentId: number) => {
     }
 };
 
-export { getAllParents, getParentById };
+const createParent = async (
+    firstName: string,
+    lastName: string,
+    phoneNumber: string
+) => {
+    try {
+        const parent = prisma.parent.create({
+            data: {
+                firstName: firstName,
+                lastName: lastName,
+                phoneNumber: phoneNumber,
+            },
+        });
+        return parent;
+    } catch (err) {
+        return err;
+    }
+};
+
+const deleteParentById = async (parentId: number) => {
+    try {
+        const parentDeleted = await prisma.parent.delete({
+            where: {
+                id: parentId,
+            },
+        });
+        return parentDeleted;
+    } catch (err) {
+        return err;
+    }
+};
+
+export { getAllParents, getParentById, createParent, deleteParentById };

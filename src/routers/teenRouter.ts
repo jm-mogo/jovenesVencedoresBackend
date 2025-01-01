@@ -20,19 +20,6 @@ teenRouter.get("/:id", async (req, res) => {
     res.json({ teen });
 });
 
-teenRouter.delete("/:id", async (req, res) => {
-    const teenId: number = Number(req.params.id);
-    try {
-        const deletedTeen = await deleteTeenById(teenId);
-        res.status(201).json({
-            message: "Teen deleted succesfully",
-            teen: deletedTeen,
-        });
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
-});
-
 teenRouter.post(
     "/",
     [
@@ -78,5 +65,17 @@ teenRouter.post(
         }
     }
 );
+
+teenRouter.delete("/:id", async (req, res) => {
+    const teenId: number = Number(req.params.id);
+    try {
+        await deleteTeenById(teenId);
+        res.status(204).json({
+            message: "Teen deleted succesfully",
+        });
+    } catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
 
 export default teenRouter;
