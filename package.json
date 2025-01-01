@@ -1,0 +1,19 @@
+{
+    "scripts": {
+        "build-w": "tsc --watch",
+        "cp-views-w": "node --watch-path=./src/views copyViews.js",
+        "dev": "node --watch-path=./dist ./dist/index.js"
+    },
+    "type": "module",
+    "devDependencies": {
+        "@types/express": "^5.0.0",
+        "@types/node": "^22.10.2",
+        "prisma": "^6.1.0",
+        "typescript": "^5.7.2"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.1.0",
+        "express": "^4.21.2",
+        "express-validator": "^7.2.1"
+    }
+}
