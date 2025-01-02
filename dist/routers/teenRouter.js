@@ -16,6 +16,10 @@ teenRouter.post("/", [
     body("lastName").notEmpty().withMessage("Last name is required"),
     body("dateOfBirth").isISO8601().withMessage("Invalid date format"),
     body("gender").isIn(["M", "F"]).withMessage("Invalid gender"),
+    body("phoneNumber")
+        .optional()
+        .isLength({ min: 11, max: 11 })
+        .withMessage("Phone number must be 11 digits"),
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -46,7 +50,32 @@ teenRouter.delete("/:id", async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
-teenRouter.put("/:id", async (req, res) => {
+teenRouter.put("/:id", [
+    body("firstName")
+        .optional()
+        .notEmpty()
+        .withMessage("First name is required"),
+    body("lastName")
+        .optional()
+        .notEmpty()
+        .withMessage("Last name is required"),
+    body("dateOfBirth")
+        .optional()
+        .isISO8601()
+        .withMessage("Invalid date format"),
+    body("gender")
+        .optional()
+        .isIn(["M", "F"])
+        .withMessage("Invalid gender"),
+    body("phoneNumber")
+        .optional()
+        .isLength({ min: 11, max: 11 })
+        .withMessage("Phone number must be 11 digits"),
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     const teenId = Number(req.params.id);
     try {
         const teenUpdated = await updateTeenById(req.body, teenId);

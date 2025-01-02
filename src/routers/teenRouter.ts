@@ -28,6 +28,10 @@ teenRouter.post(
         body("lastName").notEmpty().withMessage("Last name is required"),
         body("dateOfBirth").isISO8601().withMessage("Invalid date format"),
         body("gender").isIn(["M", "F"]).withMessage("Invalid gender"),
+        body("phoneNumber")
+            .optional()
+            .isLength({ min: 11, max: 11 })
+            .withMessage("Phone number must be 11 digits"),
     ],
     async (req: any, res: any) => {
         const errors = validationResult(req);
@@ -63,18 +67,48 @@ teenRouter.delete("/:id", async (req, res) => {
     }
 });
 
-teenRouter.put("/:id", async (req, res) => {
-    const teenId: number = Number(req.params.id);
-    try {
-        const teenUpdated = await updateTeenById(req.body, teenId);
-        res.status(200).json({
-            message: "updated successfully",
-            teen: teenUpdated,
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: "Server error" });
+teenRouter.put(
+    "/:id",
+    [
+        body("firstName")
+            .optional()
+            .notEmpty()
+            .withMessage("First name is required"),
+        body("lastName")
+            .optional()
+            .notEmpty()
+            .withMessage("Last name is required"),
+        body("dateOfBirth")
+            .optional()
+            .isISO8601()
+            .withMessage("Invalid date format"),
+        body("gender")
+            .optional()
+            .isIn(["M", "F"])
+            .withMessage("Invalid gender"),
+        body("phoneNumber")
+            .optional()
+            .isLength({ min: 11, max: 11 })
+            .withMessage("Phone number must be 11 digits"),
+    ],
+
+    async (req: any, res: any) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        const teenId: number = Number(req.params.id);
+        try {
+            const teenUpdated = await updateTeenById(req.body, teenId);
+            res.status(200).json({
+                message: "updated successfully",
+                teen: teenUpdated,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: "Server error" });
+        }
     }
-});
+);
 
 export default teenRouter;
