@@ -1,4 +1,4 @@
-import { Gender, PrismaClient } from "@prisma/client";
+import { Gender, PrismaClient, Teen } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -26,26 +26,10 @@ const getTeenById = async (teenId: number) => {
     }
 };
 
-const createTeen = async (
-    firstName: string,
-    lastName: string,
-    dateOfBirth: Date,
-    gender: Gender,
-    phoneNumber: string,
-    address: string,
-    parentId: number = 1
-) => {
+const createTeen = async (data: Teen) => {
     try {
         const teen = await prisma.teen.create({
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                dateOfBirth: dateOfBirth,
-                gender: gender,
-                phoneNumber: phoneNumber,
-                address: address,
-                parentId: parentId,
-            },
+            data,
         });
         return teen;
     } catch (err) {
@@ -66,4 +50,18 @@ const deleteTeenById = async (teenId: number) => {
     }
 };
 
-export { getAllTeens, getTeenById, createTeen, deleteTeenById };
+const updateTeenById = async (data: object, teenId: number) => {
+    try {
+        const teenUpdated = await prisma.teen.update({
+            where: {
+                id: teenId,
+            },
+            data,
+        });
+        return teenUpdated;
+    } catch (err) {
+        return err;
+    }
+};
+
+export { getAllTeens, getTeenById, createTeen, deleteTeenById, updateTeenById };

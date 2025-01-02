@@ -5,6 +5,7 @@ import {
     deleteTeenById,
     getAllTeens,
     getTeenById,
+    updateTeenById,
 } from "../controllers/teenController.js";
 
 const teenRouter = Router();
@@ -29,31 +30,15 @@ teenRouter.post(
         body("gender").isIn(["M", "F"]).withMessage("Invalid gender"),
     ],
     async (req: any, res: any) => {
-        const {
-            firstName,
-            lastName,
-            dateOfBirth,
-            gender,
-            phoneNumber,
-            address,
-            parentId,
-        } = req.body;
-
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        req.body.dateOfBirth = new Date(req.body.dateOfBirth);
+
         try {
-            const newTeen = await createTeen(
-                firstName,
-                lastName,
-                new Date(dateOfBirth),
-                gender,
-                phoneNumber,
-                address,
-                parentId
-            );
+            const newTeen = await createTeen(req.body);
 
             res.status(201).json({
                 messsage: "Teen created succesfully",
@@ -74,6 +59,20 @@ teenRouter.delete("/:id", async (req, res) => {
             message: "Teen deleted succesfully",
         });
     } catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+teenRouter.put("/:id", async (req, res) => {
+    const teenId: number = Number(req.params.id);
+    try {
+        const teenUpdated = await updateTeenById(req.body, teenId);
+        res.status(200).json({
+            message: "updated successfully",
+            teen: teenUpdated,
+        });
+    } catch (err) {
+        console.log(err);
         res.status(500).json({ message: "Server error" });
     }
 });

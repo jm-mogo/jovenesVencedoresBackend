@@ -48,5 +48,19 @@ const deleteParentById = async (parentId) => {
         return err;
     }
 };
-export { getAllParents, getParentById, createParent, deleteParentById };
+const updateParentById = async (data, parentId) => {
+    try {
+        const parentUpdated = await prisma.parent.update({
+            where: {
+                id: parentId,
+            },
+            data,
+        });
+        return parentUpdated;
+    }
+    catch (err) {
+        return err;
+    }
+};
+export { getAllParents, getParentById, createParent, deleteParentById, updateParentById, };
 //# sourceMappingURL=parentController.js.map

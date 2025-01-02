@@ -4,6 +4,7 @@ import {
     deleteParentById,
     getAllParents,
     getParentById,
+    updateParentById,
 } from "../controllers/parentController.js";
 
 const parentRouter = Router();
@@ -40,6 +41,20 @@ parentRouter.delete("/:id", async (req, res) => {
         await deleteParentById(parentId);
         res.status(204).json({ message: "deleted succesfully" });
     } catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+parentRouter.put("/:id", async (req, res) => {
+    const parentId: number = Number(req.params.id);
+    try {
+        const parentUpdated = await updateParentById(req.body, parentId);
+        res.status(200).json({
+            message: "updated successfully",
+            parent: parentUpdated,
+        });
+    } catch (err) {
+        console.log(err);
         res.status(500).json({ message: "Server error" });
     }
 });

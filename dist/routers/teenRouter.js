@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, validationResult } from "express-validator";
-import { createTeen, deleteTeenById, getAllTeens, getTeenById, } from "../controllers/teenController.js";
+import { createTeen, deleteTeenById, getAllTeens, getTeenById, updateTeenById, } from "../controllers/teenController.js";
 const teenRouter = Router();
 teenRouter.get("/", async (req, res) => {
     const teens = await getAllTeens();
@@ -17,13 +17,13 @@ teenRouter.post("/", [
     body("dateOfBirth").isISO8601().withMessage("Invalid date format"),
     body("gender").isIn(["M", "F"]).withMessage("Invalid gender"),
 ], async (req, res) => {
-    const { firstName, lastName, dateOfBirth, gender, phoneNumber, address, parentId, } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+    req.body.dateOfBirth = new Date(req.body.dateOfBirth);
     try {
-        const newTeen = await createTeen(firstName, lastName, new Date(dateOfBirth), gender, phoneNumber, address, parentId);
+        const newTeen = await createTeen(req.body);
         res.status(201).json({
             messsage: "Teen created succesfully",
             teen: newTeen,
@@ -43,6 +43,20 @@ teenRouter.delete("/:id", async (req, res) => {
         });
     }
     catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+teenRouter.put("/:id", async (req, res) => {
+    const teenId = Number(req.params.id);
+    try {
+        const teenUpdated = await updateTeenById(req.body, teenId);
+        res.status(200).json({
+            message: "updated successfully",
+            teen: teenUpdated,
+        });
+    }
+    catch (err) {
+        console.log(err);
         res.status(500).json({ message: "Server error" });
     }
 });

@@ -23,18 +23,10 @@ const getTeenById = async (teenId) => {
         console.log(err);
     }
 };
-const createTeen = async (firstName, lastName, dateOfBirth, gender, phoneNumber, address, parentId = 1) => {
+const createTeen = async (data) => {
     try {
         const teen = await prisma.teen.create({
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                dateOfBirth: dateOfBirth,
-                gender: gender,
-                phoneNumber: phoneNumber,
-                address: address,
-                parentId: parentId,
-            },
+            data,
         });
         return teen;
     }
@@ -55,5 +47,19 @@ const deleteTeenById = async (teenId) => {
         return err;
     }
 };
-export { getAllTeens, getTeenById, createTeen, deleteTeenById };
+const updateTeenById = async (data, teenId) => {
+    try {
+        const teenUpdated = await prisma.teen.update({
+            where: {
+                id: teenId,
+            },
+            data,
+        });
+        return teenUpdated;
+    }
+    catch (err) {
+        return err;
+    }
+};
+export { getAllTeens, getTeenById, createTeen, deleteTeenById, updateTeenById };
 //# sourceMappingURL=teenController.js.map
