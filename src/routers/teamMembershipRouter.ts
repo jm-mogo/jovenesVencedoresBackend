@@ -9,7 +9,7 @@ const teamMembership = Router();
 teamMembership.post("/", async (req, res) => {
     try {
         const newTeamMembership = await createTeamMembership(req.body);
-        res.json({
+        res.status(201).json({
             message: "Team membership created successfully",
             teamMembership: newTeamMembership,
         });
@@ -27,3 +27,5 @@ teamMembership.delete("/:id", async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
+
+export default teamMembership;

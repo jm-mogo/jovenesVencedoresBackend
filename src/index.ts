@@ -3,6 +3,8 @@ import teenRouter from "./routers/teenRouter.js";
 import parentRouter from "./routers/parentRouter.js";
 import seasonRouter from "./routers/seasonRouter.js";
 import teamRouter from "./routers/teamRouter.js";
+import teamMembership from "./routers/teamMembershipRouter.js";
+import meatingRouter from "./routers/meatingRouter.js";
 
 const app = express();
 
@@ -16,6 +18,8 @@ app.use("/teens", teenRouter);
 app.use("/parents", parentRouter);
 app.use("/seasons", seasonRouter);
 app.use("/teams", teamRouter);
+app.use("/teamMemberships", teamMembership);
+app.use("/meatings", meatingRouter);
 
 app.listen(PORT, HOST, () => {
     console.log(`app running on ${HOST}:${PORT}`);

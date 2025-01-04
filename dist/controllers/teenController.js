@@ -32,18 +32,6 @@ const createTeen = async (data) => {
         return err;
     }
 };
-const deleteTeenById = async (teenId) => {
-    try {
-        return await prisma.teen.delete({
-            where: {
-                id: teenId,
-            },
-        });
-    }
-    catch (err) {
-        return err;
-    }
-};
 const updateTeenById = async (teenId, data) => {
     try {
         return await prisma.teen.update({
@@ -51,6 +39,18 @@ const updateTeenById = async (teenId, data) => {
                 id: teenId,
             },
             data,
+        });
+    }
+    catch (err) {
+        return err;
+    }
+};
+const deleteTeenById = async (teenId) => {
+    try {
+        return await prisma.teen.delete({
+            where: {
+                id: teenId,
+            },
         });
     }
     catch (err) {

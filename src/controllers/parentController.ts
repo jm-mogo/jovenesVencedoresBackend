@@ -34,18 +34,6 @@ const createParent = async (data: {
     }
 };
 
-const deleteParentById = async (parentId: number) => {
-    try {
-        return await prisma.parent.delete({
-            where: {
-                id: parentId,
-            },
-        });
-    } catch (err) {
-        return err;
-    }
-};
-
 const updateParentById = async (
     parentId: number,
     data: { firstName: string; lastName: string; phoneNumber: string }
@@ -56,6 +44,18 @@ const updateParentById = async (
                 id: parentId,
             },
             data,
+        });
+    } catch (err) {
+        return err;
+    }
+};
+
+const deleteParentById = async (parentId: number) => {
+    try {
+        return await prisma.parent.delete({
+            where: {
+                id: parentId,
+            },
         });
     } catch (err) {
         return err;
