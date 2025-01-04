@@ -1,6 +1,8 @@
-import express, { urlencoded } from "express";
+import express from "express";
 import teenRouter from "./routers/teenRouter.js";
 import parentRouter from "./routers/parentRouter.js";
+import seasonRouter from "./routers/seasonRouter.js";
+import teamRouter from "./routers/teamRouter.js";
 
 const app = express();
 
@@ -12,6 +14,8 @@ app.use(express.json());
 
 app.use("/teens", teenRouter);
 app.use("/parents", parentRouter);
+app.use("/seasons", seasonRouter);
+app.use("/teams", teamRouter);
 
 app.listen(PORT, HOST, () => {
     console.log(`app running on ${HOST}:${PORT}`);

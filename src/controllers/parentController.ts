@@ -2,13 +2,12 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const getAllParents = async () => {
-    const parents = await prisma.parent.findMany();
-    return parents;
+    return await prisma.parent.findMany();
 };
 
 const getParentById = async (parentId: number) => {
     try {
-        const parent = await prisma.parent.findUnique({
+        return await prisma.parent.findUnique({
             where: {
                 id: parentId,
             },
@@ -16,26 +15,20 @@ const getParentById = async (parentId: number) => {
                 teens: true,
             },
         });
-        return parent;
     } catch (err) {
-        console.log(err);
+        return err;
     }
 };
 
-const createParent = async (
-    firstName: string,
-    lastName: string,
-    phoneNumber: string
-) => {
+const createParent = async (data: {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+}) => {
     try {
-        const parent = prisma.parent.create({
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                phoneNumber: phoneNumber,
-            },
+        return await prisma.parent.create({
+            data,
         });
-        return parent;
     } catch (err) {
         return err;
     }
@@ -43,26 +36,27 @@ const createParent = async (
 
 const deleteParentById = async (parentId: number) => {
     try {
-        const parentDeleted = await prisma.parent.delete({
+        return await prisma.parent.delete({
             where: {
                 id: parentId,
             },
         });
-        return parentDeleted;
     } catch (err) {
         return err;
     }
 };
 
-const updateParentById = async (data: object, parentId: number) => {
+const updateParentById = async (
+    parentId: number,
+    data: { firstName: string; lastName: string; phoneNumber: string }
+) => {
     try {
-        const parentUpdated = await prisma.parent.update({
+        return await prisma.parent.update({
             where: {
                 id: parentId,
             },
             data,
         });
-        return parentUpdated;
     } catch (err) {
         return err;
     }

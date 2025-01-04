@@ -1,12 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const getAllParents = async () => {
-    const parents = await prisma.parent.findMany();
-    return parents;
+    return await prisma.parent.findMany();
 };
 const getParentById = async (parentId) => {
     try {
-        const parent = await prisma.parent.findUnique({
+        return await prisma.parent.findUnique({
             where: {
                 id: parentId,
             },
@@ -14,22 +13,16 @@ const getParentById = async (parentId) => {
                 teens: true,
             },
         });
-        return parent;
     }
     catch (err) {
-        console.log(err);
+        return err;
     }
 };
-const createParent = async (firstName, lastName, phoneNumber) => {
+const createParent = async (data) => {
     try {
-        const parent = prisma.parent.create({
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                phoneNumber: phoneNumber,
-            },
+        return await prisma.parent.create({
+            data,
         });
-        return parent;
     }
     catch (err) {
         return err;
@@ -37,26 +30,24 @@ const createParent = async (firstName, lastName, phoneNumber) => {
 };
 const deleteParentById = async (parentId) => {
     try {
-        const parentDeleted = await prisma.parent.delete({
+        return await prisma.parent.delete({
             where: {
                 id: parentId,
             },
         });
-        return parentDeleted;
     }
     catch (err) {
         return err;
     }
 };
-const updateParentById = async (data, parentId) => {
+const updateParentById = async (parentId, data) => {
     try {
-        const parentUpdated = await prisma.parent.update({
+        return await prisma.parent.update({
             where: {
                 id: parentId,
             },
             data,
         });
-        return parentUpdated;
     }
     catch (err) {
         return err;

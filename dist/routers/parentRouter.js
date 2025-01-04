@@ -11,12 +11,24 @@ parentRouter.get("/:id", async (req, res) => {
     res.json({ parent });
 });
 parentRouter.post("/", async (req, res) => {
-    const { firstName, lastName, phoneNumber } = req.body;
     try {
-        const newParent = await createParent(firstName, lastName, phoneNumber);
+        const newParent = await createParent(req.body);
         res.status(201).json({
             message: "Parent created successfully",
             parent: newParent,
+        });
+    }
+    catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+parentRouter.put("/:id", async (req, res) => {
+    const parentId = Number(req.params.id);
+    try {
+        const parentUpdated = await updateParentById(parentId, req.body);
+        res.status(200).json({
+            message: "updated successfully",
+            parent: parentUpdated,
         });
     }
     catch (err) {
@@ -27,23 +39,9 @@ parentRouter.delete("/:id", async (req, res) => {
     const parentId = Number(req.params.id);
     try {
         await deleteParentById(parentId);
-        res.status(204).json({ message: "deleted succesfully" });
+        res.status(204).json({ message: "Parent deleted succesfully" });
     }
     catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
-});
-parentRouter.put("/:id", async (req, res) => {
-    const parentId = Number(req.params.id);
-    try {
-        const parentUpdated = await updateParentById(req.body, parentId);
-        res.status(200).json({
-            message: "updated successfully",
-            parent: parentUpdated,
-        });
-    }
-    catch (err) {
-        console.log(err);
         res.status(500).json({ message: "Server error" });
     }
 });

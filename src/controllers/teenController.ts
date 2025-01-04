@@ -15,23 +15,21 @@ const getAllTeens = async () => {
 
 const getTeenById = async (teenId: number) => {
     try {
-        const teen = await prisma.teen.findUnique({
+        return await prisma.teen.findUnique({
             where: {
                 id: teenId,
             },
         });
-        return teen;
     } catch (err) {
-        console.log(err);
+        return err;
     }
 };
 
 const createTeen = async (data: Teen) => {
     try {
-        const teen = await prisma.teen.create({
+        return await prisma.teen.create({
             data,
         });
-        return teen;
     } catch (err) {
         return err;
     }
@@ -39,26 +37,35 @@ const createTeen = async (data: Teen) => {
 
 const deleteTeenById = async (teenId: number) => {
     try {
-        const teenDeleted = await prisma.teen.delete({
+        return await prisma.teen.delete({
             where: {
                 id: teenId,
             },
         });
-        return teenDeleted;
     } catch (err) {
         return err;
     }
 };
 
-const updateTeenById = async (data: object, teenId: number) => {
+const updateTeenById = async (
+    teenId: number,
+    data: {
+        fiirstName: string;
+        lastName: string;
+        dateOfBirth: Date;
+        gender: Gender;
+        phoneNumber: string;
+        addres: string;
+        parentId: number;
+    }
+) => {
     try {
-        const teenUpdated = await prisma.teen.update({
+        return await prisma.teen.update({
             where: {
                 id: teenId,
             },
             data,
         });
-        return teenUpdated;
     } catch (err) {
         return err;
     }
