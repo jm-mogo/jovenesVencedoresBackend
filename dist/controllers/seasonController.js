@@ -11,6 +11,7 @@ const getSeasonById = async (seasonId) => {
             },
             include: {
                 teams: true,
+                meetings: true,
             },
         });
     }

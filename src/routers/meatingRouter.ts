@@ -7,6 +7,7 @@ import {
 const meatingRouter = Router();
 
 meatingRouter.post("/", async (req, res) => {
+    req.body.date = new Date(req.body.date);
     try {
         const newMeeting = await createMeating(req.body);
         res.status(201).json({

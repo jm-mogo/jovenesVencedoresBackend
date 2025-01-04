@@ -13,6 +13,7 @@ const getSeasonById = async (seasonId: number) => {
             },
             include: {
                 teams: true,
+                meetings: true,
             },
         });
     } catch (err) {
