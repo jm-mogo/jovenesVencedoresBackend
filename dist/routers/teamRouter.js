@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body, validationResult } from "express-validator";
-import { getAllTeams, getTeamById, createTeam, updateTeamById, deleteTeamById, } from "../controllers/teamController.js";
+import { getAllTeams, getTeamById, createTeam, updateTeamById, deleteTeamById, getTeamMembersById, } from "../controllers/teamController.js";
 const teamRouter = Router();
 // Validation middleware
 const validateTeam = [
@@ -27,6 +27,19 @@ teamRouter.get("/:id", async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ error: "Failed to fetch team" });
+    }
+});
+teamRouter.get("/:id/members", async (req, res) => {
+    try {
+        const teamId = Number(req.params.id);
+        const members = await getTeamMembersById(teamId);
+        if (!members) {
+            return res.status(404).json({ error: "Team not found" });
+        }
+        res.json({ members });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to fetch members" });
     }
 });
 teamRouter.post("/", validateTeam, async (req, res) => {

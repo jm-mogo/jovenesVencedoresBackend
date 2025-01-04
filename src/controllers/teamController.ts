@@ -1,4 +1,6 @@
 import { PrismaClient, Team } from "@prisma/client";
+import { getTeenById } from "./teenController.js";
+import teamMembership from "../routers/teamMembershipRouter.js";
 
 const prisma = new PrismaClient();
 
@@ -11,6 +13,37 @@ const getTeamById = async (id: number) => {
         return await prisma.team.findUnique({
             where: { id },
         });
+    } catch (err) {
+        return err;
+    }
+};
+
+const getTeamMembersById = async (id: number) => {
+    try {
+        const team = await prisma.team.findUnique({
+            where: { id },
+            include: {
+                TeamMemberships: true,
+            },
+        });
+
+        const teensId = team?.TeamMemberships.map(
+            (teamMembership) => teamMembership.id
+        );
+
+        const members = await prisma.teen.findMany({
+            where: {
+                id: { in: teensId },
+            },
+
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+            },
+        });
+
+        return members;
     } catch (err) {
         return err;
     }
@@ -47,4 +80,11 @@ const deleteTeamById = async (id: number) => {
     }
 };
 
-export { getAllTeams, getTeamById, createTeam, updateTeamById, deleteTeamById };
+export {
+    getAllTeams,
+    getTeamById,
+    createTeam,
+    updateTeamById,
+    deleteTeamById,
+    getTeamMembersById,
+};

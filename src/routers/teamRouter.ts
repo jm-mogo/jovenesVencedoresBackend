@@ -6,6 +6,7 @@ import {
     createTeam,
     updateTeamById,
     deleteTeamById,
+    getTeamMembersById,
 } from "../controllers/teamController.js";
 
 const teamRouter = Router();
@@ -35,6 +36,19 @@ teamRouter.get("/:id", async (req: any, res: any) => {
         res.json({ team });
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch team" });
+    }
+});
+
+teamRouter.get("/:id/members", async (req: any, res: any) => {
+    try {
+        const teamId = Number(req.params.id);
+        const members = await getTeamMembersById(teamId);
+        if (!members) {
+            return res.status(404).json({ error: "Team not found" });
+        }
+        res.json({ members });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch members" });
     }
 });
 
