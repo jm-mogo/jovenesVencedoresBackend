@@ -29,6 +29,7 @@ model Teen {
   address String?
   parent Parent @relation(fields: parentId, references: [id])
   parentId Int @default(1)
+  teamMemberships TeamMembership[]
 }
 
 model Parent {
@@ -38,6 +39,65 @@ model Parent {
   phoneNumber String? 
   teens Teen[]
 }
+
+model Season {
+  id Int @id @default(autoincrement())
+  name String
+  teams Team[]
+  meetings Meeting[]
+  memberships TeamMembership[]
+}
+
+model Team {
+  id Int @id @default(autoincrement())
+  name String
+  season Season @relation(fields: seasonId, references: [id])
+  seasonId Int
+  TeamMemberships TeamMembership[]
+  points PointRecord[]
+}
+
+model TeamMembership {
+  id Int @id @default(autoincrement())
+  teen Teen @relation(fields: teenId, references: [id])
+  teenId Int
+  team Team @relation(fields: teamId, references: [id])
+  teamId Int
+  season Season @relation(fields: seasonId, references: [id])
+  seasonId Int
+  attendances Attendance[]
+
+  @@unique([teenId, seasonId])
+}
+
+model Meeting {
+  id Int @id @default(autoincrement())
+  date DateTime
+  season Season @relation(fields: seasonId, references: [id])
+  seasonId Int
+  points PointRecord[]
+  attendances Attendance[]
+}
+
+model PointRecord {
+  id Int @id @default(autoincrement())
+  points Int
+  meeting Meeting @relation(fields: meetingId, references: [id])
+  meetingId Int
+  team Team @relation(fields: teamId, references: [id])
+  teamId Int
+
+  @@unique([meetingId, teamId])
+}
+model Attendance {
+  id Int @id @default(autoincrement())
+  meeting Meeting @relation(fields: meetingId, references: [id])
+  meetingId Int
+  teamMembership TeamMembership @relation(fields: teamMembershipId, references: [id])
+  teamMembershipId Int
+  present Boolean
+}
+
 
 enum Gender {
   M
