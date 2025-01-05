@@ -1,22 +1,16 @@
 import { Router } from "express";
-import {
-    createMeeting,
-    deleteMeetingById,
-    getMeetingById,
-} from "../controllers/meetingController.js";
-
+import { createMeeting, deleteMeetingById, getMeetingById, } from "../controllers/meetingController.js";
 const meetingRouter = Router();
-
 meetingRouter.get("/:id", async (req, res) => {
     try {
-        const meetingId: number = Number(req.params.id);
+        const meetingId = Number(req.params.id);
         const meeting = await getMeetingById(meetingId);
         res.json({ meeting });
-    } catch (err) {
+    }
+    catch (err) {
         res.status(500).json({ message: "Server error" });
     }
 });
-
 meetingRouter.post("/", async (req, res) => {
     req.body.date = new Date(req.body.date);
     try {
@@ -25,20 +19,20 @@ meetingRouter.post("/", async (req, res) => {
             message: "Meating created successfully",
             newMeeting,
         });
-    } catch (err) {
+    }
+    catch (err) {
         res.status(500).json({ message: "Server error" });
     }
 });
-
 meetingRouter.delete("/:id", async (req, res) => {
     try {
         const meatingId = Number(req.params.id);
         await deleteMeetingById(meatingId);
-
         res.json({ message: "Meating deleted successfully" });
-    } catch (err) {
+    }
+    catch (err) {
         res.status(500).json({ message: "Server error" });
     }
 });
-
 export default meetingRouter;
+//# sourceMappingURL=meetingRouter.js.map

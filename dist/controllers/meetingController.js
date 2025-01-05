@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-
-const getMeetingById = async (meetingId: number) => {
+const getMeetingById = async (meetingId) => {
     try {
         return await prisma.meeting.findFirst({
             where: {
@@ -12,29 +11,30 @@ const getMeetingById = async (meetingId: number) => {
                 points: true,
             },
         });
-    } catch (err) {
+    }
+    catch (err) {
         return err;
     }
 };
-
-const createMeeting = async (data: { seasonId: number; date: Date }) => {
+const createMeeting = async (data) => {
     try {
         return await prisma.meeting.create({ data });
-    } catch (err) {
+    }
+    catch (err) {
         return err;
     }
 };
-
-const deleteMeetingById = async (meetingId: number) => {
+const deleteMeetingById = async (meetingId) => {
     try {
         return await prisma.meeting.delete({
             where: {
                 id: meetingId,
             },
         });
-    } catch (err) {
+    }
+    catch (err) {
         return err;
     }
 };
-
 export { createMeeting, deleteMeetingById, getMeetingById };
+//# sourceMappingURL=meetingController.js.map

@@ -86,7 +86,6 @@ model PointRecord {
   meetingId Int
   team Team @relation(fields: teamId, references: [id])
   teamId Int
-
   @@unique([meetingId, teamId])
 }
 model Attendance {

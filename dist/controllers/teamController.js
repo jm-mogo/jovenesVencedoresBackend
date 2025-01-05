@@ -7,6 +7,9 @@ const getTeamById = async (id) => {
     try {
         return await prisma.team.findUnique({
             where: { id },
+            include: {
+                points: true,
+            },
         });
     }
     catch (err) {
