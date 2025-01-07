@@ -19,7 +19,24 @@ const getMeetingById = async (meetingId: number) => {
 
 const createMeeting = async (data: { seasonId: number; date: Date }) => {
     try {
-        return await prisma.meeting.create({ data });
+        const meeting = await prisma.meeting.create({ data });
+        const members = await prisma.teamMembership.findMany({
+            where: { seasonId: meeting.seasonId },
+        });
+
+        const membersId = members.map((member) => {
+            return {
+                meetingId: meeting.id,
+                teamMembershipId: member.id,
+                present: false,
+            };
+        });
+
+        await prisma.attendance.createManyAndReturn({
+            data: membersId,
+        });
+
+        return meeting;
     } catch (err) {
         return err;
     }
