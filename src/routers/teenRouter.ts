@@ -23,13 +23,13 @@ const validateTeen = [
 
 teenRouter.get("/", async (req, res) => {
     const teens = await getAllTeens();
-    res.json({ teens });
+    res.json(teens);
 });
 
 teenRouter.get("/:id", async (req, res) => {
     const teenId: number = Number(req.params.id);
     const teen = await getTeenById(teenId);
-    res.json({ teen });
+    res.json(teen);
 });
 
 teenRouter.post("/", validateTeen, async (req: any, res: any) => {

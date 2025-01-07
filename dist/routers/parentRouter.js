@@ -3,12 +3,12 @@ import { createParent, deleteParentById, getAllParents, getParentById, updatePar
 const parentRouter = Router();
 parentRouter.get("/", async (req, res) => {
     const parents = await getAllParents();
-    res.json({ parents });
+    res.json(parents);
 });
 parentRouter.get("/:id", async (req, res) => {
     const parentId = Number(req.params.id);
     const parent = await getParentById(parentId);
-    res.json({ parent });
+    res.json(parent);
 });
 parentRouter.post("/", async (req, res) => {
     try {

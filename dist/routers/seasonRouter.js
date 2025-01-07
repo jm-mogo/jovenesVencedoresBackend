@@ -3,12 +3,12 @@ import { getAllSeasons, getSeasonById, createSeason, updateSeasonById, deleteSea
 const seasonRouter = Router();
 seasonRouter.get("/", async (req, res) => {
     const seasons = await getAllSeasons();
-    res.json({ seasons });
+    res.json(seasons);
 });
 seasonRouter.get("/:id", async (req, res) => {
     const seasonId = Number(req.params.id);
     const season = await getSeasonById(seasonId);
-    res.json({ season });
+    res.json(season);
 });
 seasonRouter.post("/", async (req, res) => {
     try {

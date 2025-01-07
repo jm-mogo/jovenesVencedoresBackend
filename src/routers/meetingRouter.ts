@@ -11,7 +11,7 @@ meetingRouter.get("/:id", async (req, res) => {
     try {
         const meetingId: number = Number(req.params.id);
         const meeting = await getMeetingById(meetingId);
-        res.json({ meeting });
+        res.json(meeting);
     } catch (err) {
         res.status(500).json({ message: "Server error" });
     }

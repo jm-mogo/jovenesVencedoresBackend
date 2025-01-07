@@ -14,12 +14,12 @@ const validateTeen = [
 ];
 teenRouter.get("/", async (req, res) => {
     const teens = await getAllTeens();
-    res.json({ teens });
+    res.json(teens);
 });
 teenRouter.get("/:id", async (req, res) => {
     const teenId = Number(req.params.id);
     const teen = await getTeenById(teenId);
-    res.json({ teen });
+    res.json(teen);
 });
 teenRouter.post("/", validateTeen, async (req, res) => {
     const errors = validationResult(req);

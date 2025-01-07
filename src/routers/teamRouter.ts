@@ -20,7 +20,7 @@ const validateTeam = [
 teamRouter.get("/", async (req, res) => {
     try {
         const teams = await getAllTeams();
-        res.json({ teams });
+        res.json(teams);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch teams" });
     }
@@ -33,7 +33,7 @@ teamRouter.get("/:id", async (req: any, res: any) => {
         if (!team) {
             return res.status(404).json({ error: "Team not found" });
         }
-        res.json({ team });
+        res.json(team);
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch team" });
     }
