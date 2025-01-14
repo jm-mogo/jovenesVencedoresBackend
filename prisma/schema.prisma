@@ -53,7 +53,7 @@ model Team {
   name String
   season Season @relation(fields: seasonId, references: [id])
   seasonId Int
-  TeamMemberships TeamMembership[]
+  teamMemberships TeamMembership[]
   points PointRecord[]
 }
 

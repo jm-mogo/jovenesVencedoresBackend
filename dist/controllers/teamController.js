@@ -21,10 +21,10 @@ const getTeamMembersById = async (id) => {
         const team = await prisma.team.findUnique({
             where: { id },
             include: {
-                TeamMemberships: true,
+                teamMemberships: true,
             },
         });
-        const teensId = team?.TeamMemberships.map((teamMembership) => teamMembership.id);
+        const teensId = team?.teamMemberships.map((teamMembership) => teamMembership.id);
         const members = await prisma.teen.findMany({
             where: {
                 id: { in: teensId },

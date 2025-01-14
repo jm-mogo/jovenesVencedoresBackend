@@ -5,6 +5,7 @@ import {
     createSeason,
     updateSeasonById,
     deleteSeasonById,
+    getTeamsBySeasonId
 } from "../controllers/seasonController.js";
 
 const seasonRouter = Router();
@@ -18,6 +19,12 @@ seasonRouter.get("/:id", async (req, res) => {
     const seasonId: number = Number(req.params.id);
     const season = await getSeasonById(seasonId);
     res.json(season);
+});
+
+seasonRouter.get("/:id/teams", async (req, res) => {
+    const seasonId: number = Number(req.params.id);
+    const teams = await getTeamsBySeasonId(seasonId);
+    res.json(teams);
 });
 
 seasonRouter.post("/", async (req, res) => {
