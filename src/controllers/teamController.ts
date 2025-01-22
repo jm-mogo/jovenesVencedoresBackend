@@ -24,14 +24,14 @@ const getTeamById = async (id: number) => {
 const getTeamMembersById = async (id: number) => {
 	try {
 		const team = await prisma.team.findUnique({
-			where: { id },
+			where: { id: id },
 			include: {
 				teamMemberships: true,
 			},
 		});
 
 		const teensId = team?.teamMemberships.map(
-			(teamMembership) => teamMembership.id
+			(teamMembership) => teamMembership.teenId
 		);
 
 		const members = await prisma.teen.findMany({
