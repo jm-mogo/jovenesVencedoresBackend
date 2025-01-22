@@ -36,7 +36,7 @@ teamRouter.get("/:id/members", async (req, res) => {
         if (!members) {
             return res.status(404).json({ error: "Team not found" });
         }
-        res.json({ members });
+        res.json(members);
     }
     catch (error) {
         res.status(500).json({ error: "Failed to fetch members" });
