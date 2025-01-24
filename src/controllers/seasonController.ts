@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import teamMembership from "../routers/teamMembershipRouter.js";
 const prisma = new PrismaClient();
 
 const getAllSeasons = async () => {
@@ -16,6 +17,22 @@ const getSeasonById = async (seasonId: number) => {
 				meetings: true,
 			},
 		});
+	} catch (err) {
+		return err;
+	}
+};
+const getTeensWithoutTeamInSeason = async (id: number) => {
+	try {
+		const teens = await prisma.teen.findMany({
+			where: {
+				teamMemberships: {
+					none: {
+						seasonId: id,
+					},
+				},
+			},
+		});
+		return teens;
 	} catch (err) {
 		return err;
 	}
@@ -92,4 +109,5 @@ export {
 	deleteSeasonById,
 	updateSeasonById,
 	getTeamsBySeasonId,
+	getTeensWithoutTeamInSeason,
 };

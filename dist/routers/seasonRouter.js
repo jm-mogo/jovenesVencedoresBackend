@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllSeasons, getSeasonById, createSeason, updateSeasonById, deleteSeasonById, getTeamsBySeasonId } from "../controllers/seasonController.js";
+import { getAllSeasons, getSeasonById, createSeason, updateSeasonById, deleteSeasonById, getTeamsBySeasonId, getTeensWithoutTeamInSeason, } from "../controllers/seasonController.js";
 const seasonRouter = Router();
 seasonRouter.get("/", async (req, res) => {
     const seasons = await getAllSeasons();
@@ -14,6 +14,11 @@ seasonRouter.get("/:id/teams", async (req, res) => {
     const seasonId = Number(req.params.id);
     const teams = await getTeamsBySeasonId(seasonId);
     res.json(teams);
+});
+seasonRouter.get("/:id/teens", async (req, res) => {
+    const seasonId = Number(req.params.id);
+    const teens = await getTeensWithoutTeamInSeason(seasonId);
+    res.json(teens);
 });
 seasonRouter.post("/", async (req, res) => {
     try {

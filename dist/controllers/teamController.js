@@ -21,21 +21,32 @@ const getTeamMembersById = async (id) => {
         const team = await prisma.team.findUnique({
             where: { id: id },
             include: {
-                teamMemberships: true,
+                teamMemberships: {
+                    include: {
+                        teen: {
+                            select: {
+                                firstName: true,
+                                lastName: true,
+                            },
+                        },
+                    },
+                },
             },
         });
-        const teensId = team?.teamMemberships.map((teamMembership) => teamMembership.teenId);
-        const members = await prisma.teen.findMany({
-            where: {
-                id: { in: teensId },
-            },
-            select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-            },
-        });
-        return members;
+        // const teensId = team?.teamMemberships.map(
+        // 	(teamMembership) => teamMembership.teenId
+        // );
+        // const members = await prisma.teen.findMany({
+        // 	where: {
+        // 		id: { in: teensId },
+        // 	},
+        // 	select: {
+        // 		id: true,
+        // 		firstName: true,
+        // 		lastName: true,
+        // 	},
+        // });
+        return team?.teamMemberships;
     }
     catch (err) {
         return err;

@@ -19,6 +19,23 @@ const getSeasonById = async (seasonId) => {
         return err;
     }
 };
+const getTeensWithoutTeamInSeason = async (id) => {
+    try {
+        const teens = await prisma.teen.findMany({
+            where: {
+                teamMemberships: {
+                    none: {
+                        seasonId: id,
+                    },
+                },
+            },
+        });
+        return teens;
+    }
+    catch (err) {
+        return err;
+    }
+};
 const getTeamsBySeasonId = async (id) => {
     try {
         const season = await prisma.season.findUnique({
@@ -80,5 +97,5 @@ const updateSeasonById = async (seasonId, data) => {
         return err;
     }
 };
-export { getAllSeasons, getSeasonById, createSeason, deleteSeasonById, updateSeasonById, getTeamsBySeasonId, };
+export { getAllSeasons, getSeasonById, createSeason, deleteSeasonById, updateSeasonById, getTeamsBySeasonId, getTeensWithoutTeamInSeason, };
 //# sourceMappingURL=seasonController.js.map
