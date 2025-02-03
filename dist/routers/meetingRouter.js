@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createMeeting, deleteMeetingById, getMeetingById, getTeensInMeeting, getTeensNotInMeeting, } from "../controllers/meetingController.js";
+import { createMeeting, deleteMeetingById, getMeetingById, getPointsInMeeting, getTeensInMeeting, getTeensNotInMeeting, } from "../controllers/meetingController.js";
 const meetingRouter = Router();
 meetingRouter.get("/:id", async (req, res) => {
     try {
@@ -26,6 +26,16 @@ meetingRouter.get("/:id/teens", async (req, res) => {
         const meetingId = Number(req.params.id);
         const teens = await getTeensNotInMeeting(meetingId);
         res.json(teens);
+    }
+    catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+meetingRouter.get("/:id/points", async (req, res) => {
+    try {
+        const meetingId = Number(req.params.id);
+        const points = await getPointsInMeeting(meetingId);
+        res.json(points);
     }
     catch (err) {
         res.status(500).json({ message: "Server error" });

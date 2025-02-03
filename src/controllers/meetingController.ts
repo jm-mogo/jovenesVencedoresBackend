@@ -71,9 +71,45 @@ const getTeensNotInMeeting = async (id: number) => {
 		return err;
 	}
 };
+
+const getPointsInMeeting = async (meetingId: number) => {
+	try {
+		const pointRecords = prisma.pointRecord.findMany({
+			where: {
+				meetingId: meetingId,
+			},
+			include: {
+				team: true,
+			},
+		});
+		return pointRecords;
+	} catch (err) {
+		return err;
+	}
+};
 const createMeeting = async (data: { seasonId: number; date: Date }) => {
 	try {
 		const meeting = await prisma.meeting.create({ data });
+
+		const season = await prisma.season.findFirst({
+			where: { id: meeting.seasonId },
+		});
+
+		const teams = await prisma.team.findMany({
+			where: {
+				seasonId: season?.id,
+			},
+		});
+
+		teams.map(async (team) => {
+			await prisma.pointRecord.create({
+				data: {
+					meetingId: meeting.id,
+					teamId: team.id,
+					points: 0,
+				},
+			});
+		});
 
 		return meeting;
 	} catch (err) {
@@ -99,4 +135,5 @@ export {
 	getMeetingById,
 	getTeensInMeeting,
 	getTeensNotInMeeting,
+	getPointsInMeeting,
 };

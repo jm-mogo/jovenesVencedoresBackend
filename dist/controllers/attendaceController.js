@@ -10,6 +10,18 @@ const createAttendance = async (data) => {
         return err;
     }
 };
+const deleteAttendanceById = async (attendanceId) => {
+    try {
+        await prisma.attendance.delete({
+            where: {
+                id: attendanceId,
+            },
+        });
+    }
+    catch (err) {
+        err;
+    }
+};
 const updateAttendace = async (attendanceId, present) => {
     try {
         const updatedAttendace = await prisma.attendance.updateMany({
@@ -26,5 +38,5 @@ const updateAttendace = async (attendanceId, present) => {
         return err;
     }
 };
-export { updateAttendace, createAttendance };
+export { updateAttendace, createAttendance, deleteAttendanceById };
 //# sourceMappingURL=attendaceController.js.map

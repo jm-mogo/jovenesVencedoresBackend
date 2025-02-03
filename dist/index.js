@@ -22,6 +22,7 @@ app.use("/teamMemberships", teamMembership);
 app.use("/meetings", meetingRouter);
 app.use("/pointRecords", pointRecordRouter);
 app.use("/attendances", attendancesRouter);
+app.use("/points", pointRecordRouter);
 app.listen(PORT, HOST, () => {
     console.log(`app running on ${HOST}:${PORT}`);
 });

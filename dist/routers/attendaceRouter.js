@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { deleteTeamMembershipById, } from "../controllers/teamMembershipController.js";
-import { createAttendance } from "../controllers/attendaceController.js";
+import { createAttendance, deleteAttendanceById, } from "../controllers/attendaceController.js";
 const attendancesRouter = Router();
 attendancesRouter.post("/", async (req, res) => {
     try {
@@ -16,9 +15,9 @@ attendancesRouter.post("/", async (req, res) => {
 });
 attendancesRouter.delete("/:id", async (req, res) => {
     try {
-        const teamMembershipId = Number(req.params.id);
-        await deleteTeamMembershipById(teamMembershipId);
-        res.json({ message: "Team membership deleted successfully" });
+        const attendanceId = Number(req.params.id);
+        await deleteAttendanceById(attendanceId);
+        res.json({ message: "Attendance deleted successfully" });
     }
     catch (err) {
         res.status(500).json({ message: "Server error" });

@@ -3,6 +3,7 @@ import {
 	createMeeting,
 	deleteMeetingById,
 	getMeetingById,
+	getPointsInMeeting,
 	getTeensInMeeting,
 	getTeensNotInMeeting,
 } from "../controllers/meetingController.js";
@@ -34,6 +35,16 @@ meetingRouter.get("/:id/teens", async (req, res) => {
 		const meetingId: number = Number(req.params.id);
 		const teens = await getTeensNotInMeeting(meetingId);
 		res.json(teens);
+	} catch (err) {
+		res.status(500).json({ message: "Server error" });
+	}
+});
+
+meetingRouter.get("/:id/points", async (req, res) => {
+	try {
+		const meetingId: number = Number(req.params.id);
+		const points = await getPointsInMeeting(meetingId);
+		res.json(points);
 	} catch (err) {
 		res.status(500).json({ message: "Server error" });
 	}

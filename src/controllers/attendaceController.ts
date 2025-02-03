@@ -16,6 +16,18 @@ const createAttendance = async (data: {
 	}
 };
 
+const deleteAttendanceById = async (attendanceId: number) => {
+	try {
+		await prisma.attendance.delete({
+			where: {
+				id: attendanceId,
+			},
+		});
+	} catch (err) {
+		err;
+	}
+};
+
 const updateAttendace = async (attendanceId: number, present: boolean) => {
 	try {
 		const updatedAttendace = await prisma.attendance.updateMany({
@@ -32,4 +44,4 @@ const updateAttendace = async (attendanceId: number, present: boolean) => {
 	}
 };
 
-export { updateAttendace, createAttendance };
+export { updateAttendace, createAttendance, deleteAttendanceById };
