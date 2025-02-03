@@ -50,7 +50,7 @@ teamRouter.post("/", validateTeam, async (req, res) => {
     try {
         const { name, seasonId } = req.body;
         const newTeam = await createTeam({ name, seasonId });
-        res.status(201).json({ team: newTeam });
+        res.status(201).json(newTeam);
     }
     catch (error) {
         res.status(500).json({ error: "Failed to create team" });

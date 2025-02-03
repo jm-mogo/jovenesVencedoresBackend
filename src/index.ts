@@ -7,6 +7,7 @@ import teamMembership from "./routers/teamMembershipRouter.js";
 import meetingRouter from "./routers/meetingRouter.js";
 import pointRecordRouter from "./routers/pointRecordRouter.js";
 import cors from "cors";
+import attendancesRouter from "./routers/attendaceRouter.js";
 
 const app = express();
 
@@ -24,7 +25,8 @@ app.use("/teams", teamRouter);
 app.use("/teamMemberships", teamMembership);
 app.use("/meetings", meetingRouter);
 app.use("/pointRecords", pointRecordRouter);
+app.use("/attendances", attendancesRouter);
 
 app.listen(PORT, HOST, () => {
-    console.log(`app running on ${HOST}:${PORT}`);
+	console.log(`app running on ${HOST}:${PORT}`);
 });

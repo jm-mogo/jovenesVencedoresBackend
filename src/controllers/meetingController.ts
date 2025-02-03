@@ -17,6 +17,60 @@ const getMeetingById = async (meetingId: number) => {
 	}
 };
 
+const getTeensInMeeting = async (id: number) => {
+	try {
+		const meeting = await prisma.meeting.findFirst({
+			where: { id: id },
+			include: {
+				attendances: {
+					include: {
+						teamMembership: {
+							include: {
+								teen: {
+									select: {
+										firstName: true,
+										lastName: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+		return meeting?.attendances;
+	} catch (err) {
+		return err;
+	}
+};
+
+const getTeensNotInMeeting = async (id: number) => {
+	try {
+		const meating = await prisma.meeting.findFirst({ where: { id: id } });
+
+		const teamMemberships = await prisma.teamMembership.findMany({
+			where: {
+				seasonId: meating?.seasonId,
+				attendances: {
+					none: {
+						meetingId: id,
+					},
+				},
+			},
+			include: {
+				teen: {
+					select: {
+						firstName: true,
+						lastName: true,
+					},
+				},
+			},
+		});
+		return teamMemberships;
+	} catch (err) {
+		return err;
+	}
+};
 const createMeeting = async (data: { seasonId: number; date: Date }) => {
 	try {
 		const meeting = await prisma.meeting.create({ data });
@@ -39,4 +93,10 @@ const deleteMeetingById = async (meetingId: number) => {
 	}
 };
 
-export { createMeeting, deleteMeetingById, getMeetingById };
+export {
+	createMeeting,
+	deleteMeetingById,
+	getMeetingById,
+	getTeensInMeeting,
+	getTeensNotInMeeting,
+};

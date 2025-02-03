@@ -39,22 +39,6 @@ const getTeamMembersById = async (id: number) => {
 			},
 		});
 
-		// const teensId = team?.teamMemberships.map(
-		// 	(teamMembership) => teamMembership.teenId
-		// );
-
-		// const members = await prisma.teen.findMany({
-		// 	where: {
-		// 		id: { in: teensId },
-		// 	},
-
-		// 	select: {
-		// 		id: true,
-		// 		firstName: true,
-		// 		lastName: true,
-		// 	},
-		// });
-
 		return team?.teamMemberships;
 	} catch (err) {
 		return err;
