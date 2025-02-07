@@ -17,6 +17,19 @@ model User {
   id Int @id @default(autoincrement())
   username String @unique
   password String
+  role Role
+  group Group @relation(fields: groupId, references: [id])
+  groupId Int 
+}
+
+model Group {
+  id Int @id @default(autoincrement())
+  name String
+  churchName String @default("")
+  users User[]
+  teens Teen[]
+  parents Parent[]
+  seasons Season[]
 }
 
 model Teen {
@@ -29,6 +42,8 @@ model Teen {
   address String?
   parent Parent @relation(fields: parentId, references: [id])
   parentId Int @default(1)
+  group Group @relation(fields: groupId, references: [id])
+  groupId Int 
   teamMemberships TeamMembership[]
 }
 
@@ -38,6 +53,8 @@ model Parent {
   lastName String
   phoneNumber String? 
   teens Teen[]
+  group Group @relation(fields: groupId, references: [id])
+  groupId Int 
 }
 
 model Season {
@@ -46,6 +63,8 @@ model Season {
   teams Team[]
   meetings Meeting[]
   memberships TeamMembership[]
+   group Group @relation(fields: groupId, references: [id])
+  groupId Int 
 }
 
 model Team {
@@ -101,4 +120,11 @@ model Attendance {
 enum Gender {
   M
   F
+}
+
+enum Role {
+  primaryOwner
+  owner
+  admin
+  viewer
 }

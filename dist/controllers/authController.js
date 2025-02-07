@@ -38,11 +38,10 @@ const login = async (username, password) => {
             return { message: "Invalid credentials" };
         }
         const privateKey = fs.readFileSync("./private.pem", "utf8");
-        let token = jwt.sign({ sub: user.id, username: user.username, role: user.role }, privateKey, {
+        const token = jwt.sign({ sub: user.id }, privateKey, {
             algorithm: "RS256",
         });
-        token = "Bearer " + token;
-        return { token: token, user: user };
+        return { token: token };
     }
     catch (err) {
         console.error("Error logging in user:", err);
@@ -50,4 +49,4 @@ const login = async (username, password) => {
     }
 };
 export { register, login };
-//# sourceMappingURL=userController.js.map
+//# sourceMappingURL=authController.js.map

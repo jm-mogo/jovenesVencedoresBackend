@@ -1,13 +1,27 @@
 -- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('M', 'F');
 
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('primaryOwner', 'owner', 'admin', 'viewer');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL,
+    "groupId" INTEGER NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Group" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "churchName" TEXT NOT NULL DEFAULT '',
+
+    CONSTRAINT "Group_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -98,6 +112,9 @@ CREATE UNIQUE INDEX "TeamMembership_teenId_seasonId_key" ON "TeamMembership"("te
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PointRecord_meetingId_teamId_key" ON "PointRecord"("meetingId", "teamId");
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Teen" ADD CONSTRAINT "Teen_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "Parent"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
