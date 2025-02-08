@@ -1,15 +1,6 @@
 import { userServices } from "../services/userServices.js";
 const registerUser = async (req, res, next) => {
     try {
-        const userAuth = { ...req.user };
-        const isAuthrorized = await userServices.checkAuthorization(userAuth, [
-            "primaryOwner",
-            "owner",
-        ]);
-        if (!isAuthrorized) {
-            res.status(401).json();
-            return;
-        }
         const userBody = { ...req.body };
         const user = await userServices.createUser(userBody);
         if (!user) {
@@ -44,15 +35,6 @@ const loginUser = async (req, res, next) => {
 };
 const updateUser = async (req, res, next) => {
     try {
-        const userAuth = { ...req.user };
-        const isAuthrorized = await userServices.checkAuthorization(userAuth, [
-            "primaryOwner",
-            "owner",
-        ]);
-        if (!isAuthrorized) {
-            res.status(401).json();
-            return;
-        }
         const id = Number(req.params.id);
         const userBody = { ...req.body };
         const updatedUser = await userServices.updateUser(id, userBody);
@@ -69,15 +51,6 @@ const updateUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
     const id = Number(req.params.id);
     try {
-        const userAuth = { ...req.user };
-        const isAuthrorized = await userServices.checkAuthorization(userAuth, [
-            "primaryOwner",
-            "owner",
-        ]);
-        if (!isAuthrorized) {
-            res.status(401).json();
-            return;
-        }
         const userDeleted = await userServices.deleteUser(id);
         if (!userDeleted) {
             res.status(404).json({ message: "User not found" });

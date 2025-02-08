@@ -1,5 +1,8 @@
 import express from "express";
-import { validateData } from "../middlewares/validationMiddleware.js";
+import {
+	validateAuthorization,
+	validateData,
+} from "../middlewares/validationMiddleware.js";
 import {
 	userLoginSchema,
 	userRegistrationSchema,
@@ -18,6 +21,7 @@ const userRouter = express.Router();
 userRouter.post(
 	"/register",
 	passport.authenticate("jwt", { session: false }),
+	validateAuthorization("owner"),
 	validateData(userRegistrationSchema),
 	registerUser
 );
@@ -26,6 +30,7 @@ userRouter.put(
 	"/:id",
 	passport.authenticate("jwt", { session: false }),
 	validateData(userUpdateSchema),
+	validateAuthorization("owner"),
 	updateUser
 );
 
@@ -34,6 +39,7 @@ userRouter.post("/login", validateData(userLoginSchema), loginUser);
 userRouter.delete(
 	"/:id",
 	passport.authenticate("jwt", { session: false }),
+	validateAuthorization("owner"),
 	deleteUser
 );
 
