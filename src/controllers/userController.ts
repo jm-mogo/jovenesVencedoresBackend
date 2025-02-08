@@ -1,11 +1,7 @@
-import { PrismaClient, Role, User } from "@prisma/client";
+import { User } from "@prisma/client";
 
 import { Request, Response, NextFunction } from "express";
 import { userServices } from "../services/userServices.js";
-
-const prisma = new PrismaClient();
-
-// passport.authenticate("jwt", { session: false }),
 
 const registerUser = async (
 	req: Request,
@@ -13,6 +9,18 @@ const registerUser = async (
 	next: NextFunction
 ) => {
 	try {
+		const userAuth: Partial<User> = { ...req.user };
+
+		const isAuthrorized = await userServices.checkAuthorization(userAuth, [
+			"primaryOwner",
+			"owner",
+		]);
+
+		if (!isAuthrorized) {
+			res.status(401).json();
+			return;
+		}
+
 		const userBody: User = { ...req.body };
 		const user = await userServices.createUser(userBody);
 
@@ -46,7 +54,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
 		const token = userServices.generateToken(user);
 
-		res.json({ message: "Login successful", token, user });
+		res.json({ message: "Login successful", token });
 	} catch (err) {
 		next(err);
 	}
@@ -54,6 +62,17 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
 	try {
+		const userAuth: Partial<User> = { ...req.user };
+		const isAuthrorized = await userServices.checkAuthorization(userAuth, [
+			"primaryOwner",
+			"owner",
+		]);
+
+		if (!isAuthrorized) {
+			res.status(401).json();
+			return;
+		}
+
 		const id = Number(req.params.id);
 		const userBody: Partial<User> = { ...req.body };
 		const updatedUser = await userServices.updateUser(id, userBody);
@@ -72,6 +91,17 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
 	const id = Number(req.params.id);
 	try {
+		const userAuth: Partial<User> = { ...req.user };
+		const isAuthrorized = await userServices.checkAuthorization(userAuth, [
+			"primaryOwner",
+			"owner",
+		]);
+
+		if (!isAuthrorized) {
+			res.status(401).json();
+			return;
+		}
+
 		const userDeleted = await userServices.deleteUser(id);
 		if (!userDeleted) {
 			res.status(404).json({ message: "User not found" });

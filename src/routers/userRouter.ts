@@ -10,20 +10,31 @@ import {
 	registerUser,
 	deleteUser,
 	updateUser,
-} from "../controllers/userController.js"; // Import the controller
+} from "../controllers/userController.js";
+import passport from "passport";
 
 const userRouter = express.Router();
 
 userRouter.post(
 	"/register",
+	passport.authenticate("jwt", { session: false }),
 	validateData(userRegistrationSchema),
 	registerUser
 );
 
-userRouter.put("/:id", validateData(userUpdateSchema), updateUser);
+userRouter.put(
+	"/:id",
+	passport.authenticate("jwt", { session: false }),
+	validateData(userUpdateSchema),
+	updateUser
+);
 
 userRouter.post("/login", validateData(userLoginSchema), loginUser);
 
-userRouter.delete("/:id", deleteUser);
+userRouter.delete(
+	"/:id",
+	passport.authenticate("jwt", { session: false }),
+	deleteUser
+);
 
 export default userRouter;

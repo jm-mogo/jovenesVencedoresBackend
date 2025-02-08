@@ -1,9 +1,15 @@
-import { PrismaClient } from "@prisma/client";
 import { userServices } from "../services/userServices.js";
-const prisma = new PrismaClient();
-// passport.authenticate("jwt", { session: false }),
 const registerUser = async (req, res, next) => {
     try {
+        const userAuth = { ...req.user };
+        const isAuthrorized = await userServices.checkAuthorization(userAuth, [
+            "primaryOwner",
+            "owner",
+        ]);
+        if (!isAuthrorized) {
+            res.status(401).json();
+            return;
+        }
         const userBody = { ...req.body };
         const user = await userServices.createUser(userBody);
         if (!user) {
@@ -30,7 +36,7 @@ const loginUser = async (req, res, next) => {
             return;
         }
         const token = userServices.generateToken(user);
-        res.json({ message: "Login successful", token, user });
+        res.json({ message: "Login successful", token });
     }
     catch (err) {
         next(err);
@@ -38,6 +44,15 @@ const loginUser = async (req, res, next) => {
 };
 const updateUser = async (req, res, next) => {
     try {
+        const userAuth = { ...req.user };
+        const isAuthrorized = await userServices.checkAuthorization(userAuth, [
+            "primaryOwner",
+            "owner",
+        ]);
+        if (!isAuthrorized) {
+            res.status(401).json();
+            return;
+        }
         const id = Number(req.params.id);
         const userBody = { ...req.body };
         const updatedUser = await userServices.updateUser(id, userBody);
@@ -54,6 +69,15 @@ const updateUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
     const id = Number(req.params.id);
     try {
+        const userAuth = { ...req.user };
+        const isAuthrorized = await userServices.checkAuthorization(userAuth, [
+            "primaryOwner",
+            "owner",
+        ]);
+        if (!isAuthrorized) {
+            res.status(401).json();
+            return;
+        }
         const userDeleted = await userServices.deleteUser(id);
         if (!userDeleted) {
             res.status(404).json({ message: "User not found" });

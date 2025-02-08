@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs";
 import { PrismaClient, Role, User } from "@prisma/client";
 import fs from "fs";
 import jwt from "jsonwebtoken";
+import passport from "passport";
 
 const prisma = new PrismaClient();
 
@@ -39,8 +40,31 @@ const deleteUser = async (id: number) => {
 };
 
 const getUser = async (username: string) => {
-	const user = await prisma.user.findUnique({ where: { username } });
+	const user = await prisma.user.findUnique({
+		where: { username },
+	});
+	if (!user) {
+		return null;
+	}
+
 	return user;
+};
+
+const checkAuthorization = async (userAuth: Partial<User>, roles: Role[]) => {
+	if (!userAuth.username) {
+		return false;
+	}
+	const user = await getUser(userAuth.username);
+
+	if (!user) {
+		return false;
+	}
+
+	if (roles.includes(user.role)) {
+		return true;
+	}
+
+	return false;
 };
 
 const checkPassword = async (userBody: User, user: User): Promise<boolean> => {
@@ -71,4 +95,5 @@ export const userServices = {
 	checkPassword,
 	generateToken,
 	updateUser,
+	checkAuthorization,
 };

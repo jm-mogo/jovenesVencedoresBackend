@@ -31,8 +31,26 @@ const deleteUser = async (id) => {
     return user;
 };
 const getUser = async (username) => {
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({
+        where: { username },
+    });
+    if (!user) {
+        return null;
+    }
     return user;
+};
+const checkAuthorization = async (userAuth, roles) => {
+    if (!userAuth.username) {
+        return false;
+    }
+    const user = await getUser(userAuth.username);
+    if (!user) {
+        return false;
+    }
+    if (roles.includes(user.role)) {
+        return true;
+    }
+    return false;
 };
 const checkPassword = async (userBody, user) => {
     const passwordMatch = await bcryptjs.compare(userBody.password, user.password);
@@ -53,5 +71,6 @@ export const userServices = {
     checkPassword,
     generateToken,
     updateUser,
+    checkAuthorization,
 };
 //# sourceMappingURL=userServices.js.map
