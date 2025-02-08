@@ -11,6 +11,7 @@ import attendancesRouter from "./routers/attendaceRouter.js";
 import passport from "./middlewares/passport.js";
 import userRouter from "./routers/userRouter.js";
 import groupRouter from "./routers/groupRouter.js";
+import errorMiddleware from "./middlewares/errorMiddleware.js";
 
 const app = express();
 
@@ -31,12 +32,10 @@ app.use("/meetings", meetingRouter);
 app.use("/pointRecords", pointRecordRouter);
 app.use("/attendances", attendancesRouter);
 app.use("/points", pointRecordRouter);
-app.use(
-	"/groups",
-	passport.authenticate("jwt", { session: false }),
-	groupRouter
-);
+app.use("/groups", groupRouter);
 app.use("/users", userRouter);
+
+app.use(errorMiddleware);
 
 app.listen(PORT, HOST, () => {
 	console.log(`app running on ${HOST}:${PORT}`);
