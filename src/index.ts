@@ -12,6 +12,7 @@ import passport from "./middlewares/passport.js";
 import userRouter from "./routers/userRouter.js";
 import groupRouter from "./routers/groupRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
+import { validateAuthorization } from "./middlewares/validationMiddleware.js";
 
 const app = express();
 

@@ -29,8 +29,8 @@ userRouter.post(
 userRouter.put(
 	"/:id",
 	passport.authenticate("jwt", { session: false }),
-	validateData(userUpdateSchema),
 	validateAuthorization("owner"),
+	validateData(userUpdateSchema),
 	updateUser
 );
 

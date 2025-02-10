@@ -1,53 +1,36 @@
-import { group } from "console";
 import { Router } from "express";
 import {
 	createGroup,
-	getGroupById,
+	getGroup,
 	getGroups,
+	updateGroup,
+	deleteGroup,
 } from "../controllers/groupController.js";
+import passport from "passport";
+import {
+	validateAuthorization,
+	validateData,
+} from "../middlewares/validationMiddleware.js";
+import {
+	groupCreateSchema,
+	groupUpdateSchema,
+} from "../schemas/groupSchemas.js";
 
 const groupRouter = Router();
 
-groupRouter.get("/", async (req, res) => {
-	try {
-		if (req.user?.role == "primaryOwner") {
-			const groups = await getGroups();
-			res.json(groups);
-		} else {
-			res.status(401).json("unauthorized");
-		}
-	} catch (err) {
-		res.status(500).json({ message: "Server error" });
-	}
-});
+groupRouter.use(
+	passport.authenticate("jwt", { session: false }),
+	validateAuthorization("primaryOwner")
+);
 
-groupRouter.get("/:id", async (req, res) => {
-	try {
-		const id = Number(req.params.id);
-		if (req.user?.role == "primaryOwner") {
-			const group = await getGroupById(id);
-			res.json(group);
-		} else {
-			res.status(401).json("unauthorized");
-		}
-	} catch (err) {
-		res.status(500).json({ message: "Server error" });
-	}
-});
+groupRouter.post("/", validateData(groupCreateSchema), createGroup);
 
-groupRouter.post("/", async (req, res) => {
-	try {
-		const { name, churchName } = req.body;
+groupRouter.get("/", getGroups);
 
-		if (req.user?.role == "primaryOwner") {
-			const newGroup = await createGroup(name, churchName);
-			res.status(201).json(newGroup);
-		} else {
-			res.status(401).json("unauthorized");
-		}
-	} catch (err) {
-		res.status(500).json({ message: "Server error" });
-	}
-});
+groupRouter.get("/:id", getGroup);
+
+groupRouter.put("/:id", validateData(groupUpdateSchema), updateGroup);
+
+groupRouter.delete("/:id", deleteGroup);
 
 export default groupRouter;

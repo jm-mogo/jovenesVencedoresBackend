@@ -14,6 +14,15 @@ const createUser = async (userBody) => {
     });
     return user;
 };
+const getUser = async (username) => {
+    const user = await prisma.user.findUnique({
+        where: { username },
+    });
+    if (!user) {
+        return null;
+    }
+    return user;
+};
 const updateUser = async (id, userBody) => {
     if (userBody.password) {
         userBody.password = await bcryptjs.hash(userBody.password, 10);
@@ -28,15 +37,6 @@ const deleteUser = async (id) => {
     const user = await prisma.user.delete({
         where: { id },
     });
-    return user;
-};
-const getUser = async (username) => {
-    const user = await prisma.user.findUnique({
-        where: { username },
-    });
-    if (!user) {
-        return null;
-    }
     return user;
 };
 const checkAuthorization = async (userAuth, roles) => {
@@ -66,11 +66,11 @@ const generateToken = (user) => {
 };
 export const userServices = {
     createUser,
-    deleteUser,
+    updateUser,
     getUser,
+    deleteUser,
     checkPassword,
     generateToken,
-    updateUser,
     checkAuthorization,
 };
 //# sourceMappingURL=userServices.js.map

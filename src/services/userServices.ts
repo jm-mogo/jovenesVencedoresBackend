@@ -20,6 +20,17 @@ const createUser = async (userBody: User) => {
 	return user;
 };
 
+const getUser = async (username: string) => {
+	const user = await prisma.user.findUnique({
+		where: { username },
+	});
+	if (!user) {
+		return null;
+	}
+
+	return user;
+};
+
 const updateUser = async (id: number, userBody: Partial<User>) => {
 	if (userBody.password) {
 		userBody.password = await bcryptjs.hash(userBody.password, 10);
@@ -36,17 +47,6 @@ const deleteUser = async (id: number) => {
 	const user = await prisma.user.delete({
 		where: { id },
 	});
-	return user;
-};
-
-const getUser = async (username: string) => {
-	const user = await prisma.user.findUnique({
-		where: { username },
-	});
-	if (!user) {
-		return null;
-	}
-
 	return user;
 };
 
@@ -90,10 +90,10 @@ const generateToken = (user: User) => {
 
 export const userServices = {
 	createUser,
-	deleteUser,
+	updateUser,
 	getUser,
+	deleteUser,
 	checkPassword,
 	generateToken,
-	updateUser,
 	checkAuthorization,
 };

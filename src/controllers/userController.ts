@@ -42,7 +42,9 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
 		const token = userServices.generateToken(user);
 
-		res.json({ message: "Login successful", token });
+		const userNoPassword: Partial<User> = { ...user };
+		delete userNoPassword.password;
+		res.json({ message: "Login successful", token, user: userNoPassword });
 	} catch (err) {
 		next(err);
 	}
