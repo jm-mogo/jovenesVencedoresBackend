@@ -71,7 +71,7 @@ const updateTeen = async (req: Request, res: Response, next: NextFunction) => {
 	const teenId: number = Number(req.params.id);
 	try {
 		const teenUpdated = await teenServices.updateTeen(teenId, req.body);
-		res.status(200).json({
+		res.json({
 			message: "Teen updated",
 			teen: teenUpdated,
 		});

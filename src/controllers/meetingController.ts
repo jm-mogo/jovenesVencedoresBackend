@@ -1,139 +1,128 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { Request, Response, NextFunction } from "express";
+import { meetingServices } from "../services/meetingServices.js";
+import { Meeting } from "@prisma/client";
 
-const getMeetingById = async (meetingId: number) => {
+const createMeeting = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
-		return await prisma.meeting.findFirst({
-			where: {
-				id: meetingId,
-			},
-			include: {
-				attendances: true,
-				points: true,
-			},
-		});
+		const meetingBody: Meeting = { ...req.body };
+		meetingBody.date = new Date(meetingBody.date);
+
+		const meeting = await meetingServices.createMeeting(meetingBody);
+
+		res.status(201).json({ message: "Meeting created", data: meeting });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const getTeensInMeeting = async (id: number) => {
+const getMeeting = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const meeting = await prisma.meeting.findFirst({
-			where: { id: id },
-			include: {
-				attendances: {
-					include: {
-						teamMembership: {
-							include: {
-								teen: {
-									select: {
-										firstName: true,
-										lastName: true,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		});
-		return meeting?.attendances;
+		const meetingId: number = Number(req.params.id);
+		const meeting = await meetingServices.getMeeting(meetingId);
+
+		if (!meeting) {
+			res.status(404).json({ message: "Meeting not found" });
+			return;
+		}
+
+		res.json({ data: meeting });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const getTeensNotInMeeting = async (id: number) => {
+const getTeensInMeeting = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
-		const meating = await prisma.meeting.findFirst({ where: { id: id } });
+		const meetingId: number = Number(req.params.id);
+		const teens = await meetingServices.getTeensInMeeting(meetingId);
 
-		const teamMemberships = await prisma.teamMembership.findMany({
-			where: {
-				seasonId: meating?.seasonId,
-				attendances: {
-					none: {
-						meetingId: id,
-					},
-				},
-			},
-			include: {
-				teen: {
-					select: {
-						firstName: true,
-						lastName: true,
-					},
-				},
-			},
-		});
-		return teamMemberships;
+		res.json({ data: teens });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const getPointsInMeeting = async (meetingId: number) => {
+const getTeensNotInMeeting = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
-		const pointRecords = prisma.pointRecord.findMany({
-			where: {
-				meetingId: meetingId,
-			},
-			include: {
-				team: true,
-			},
-		});
-		return pointRecords;
+		const meetingId: number = Number(req.params.id);
+		const teens = await meetingServices.getTeensNotInMeeting(meetingId);
+		res.json({ data: teens });
 	} catch (err) {
-		return err;
-	}
-};
-const createMeeting = async (data: { seasonId: number; date: Date }) => {
-	try {
-		const meeting = await prisma.meeting.create({ data });
-
-		const season = await prisma.season.findFirst({
-			where: { id: meeting.seasonId },
-		});
-
-		const teams = await prisma.team.findMany({
-			where: {
-				seasonId: season?.id,
-			},
-		});
-
-		teams.map(async (team) => {
-			await prisma.pointRecord.create({
-				data: {
-					meetingId: meeting.id,
-					teamId: team.id,
-					points: 0,
-				},
-			});
-		});
-
-		return meeting;
-	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const deleteMeetingById = async (meetingId: number) => {
+const getPointsInMeeting = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
-		return await prisma.meeting.delete({
-			where: {
-				id: meetingId,
-			},
-		});
+		const meetingId: number = Number(req.params.id);
+		const points = await meetingServices.getPointsInMeeting(meetingId);
+		res.json({ data: points });
 	} catch (err) {
-		return err;
+		next(err);
+	}
+};
+
+const updateMeeting = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const meetingId: number = Number(req.params.id);
+		const meetingBody: Meeting = { ...req.body };
+
+		const meeting = await meetingServices.updateMeeting(
+			meetingId,
+			meetingBody
+		);
+
+		res.json({ message: "Meeting updated", data: meeting });
+	} catch (err) {
+		next(err);
+	}
+};
+
+const deleteMeeting = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const meatingId = Number(req.params.id);
+		const meetingDeleted = await meetingServices.deleteMeeting(meatingId);
+
+		if (!meetingDeleted) {
+			res.status(404).json({ message: "Meeting not found" });
+		}
+
+		res.json({ message: "Meating deleted successfully" });
+	} catch (err) {
+		next(err);
 	}
 };
 
 export {
 	createMeeting,
-	deleteMeetingById,
-	getMeetingById,
+	getMeeting,
 	getTeensInMeeting,
 	getTeensNotInMeeting,
 	getPointsInMeeting,
+	updateMeeting,
+	deleteMeeting,
 };

@@ -1,0 +1,1 @@
+{"version":3,"file":"meetingSchema.js","sourceRoot":"","sources":["../../src/schemas/meetingSchema.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,CAAC,EAAE,MAAM,KAAK,CAAC;AAExB,MAAM,CAAC,MAAM,aAAa,GAAG,CAAC;KAC5B,MAAM,CAAC;IACP,IAAI,EAAE,CAAC,CAAC,MAAM,EAAE;IAChB,QAAQ,EAAE,CAAC,CAAC,MAAM,EAAE;CACpB,CAAC;KACD,MAAM,EAAE,CAAC"}
