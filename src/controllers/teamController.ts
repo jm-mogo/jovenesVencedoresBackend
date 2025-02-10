@@ -1,86 +1,89 @@
 import { PrismaClient, Team } from "@prisma/client";
-import { getTeenById } from "./teenController.js";
-import teamMembership from "../routers/teamMembershipRouter.js";
+import { Request, Response, NextFunction } from "express";
+import { teamServices } from "../services/teamservices.js";
 
 const prisma = new PrismaClient();
 
-const getAllTeams = async () => {
-	return await prisma.team.findMany();
-};
-
-const getTeamById = async (id: number) => {
+const createTeam = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		return await prisma.team.findUnique({
-			where: { id },
-			include: {
-				points: true,
-			},
-		});
+		const teamBody: Team = { ...req.body };
+
+		const team = await teamServices.createTeam(teamBody);
+
+		res.status(201).json({ message: "Team created", data: team });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const getTeamMembersById = async (id: number) => {
+const getTeams = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const team = await prisma.team.findUnique({
-			where: { id: id },
-			include: {
-				teamMemberships: {
-					include: {
-						teen: {
-							select: {
-								firstName: true,
-								lastName: true,
-							},
-						},
-					},
-				},
-			},
-		});
+		const { seasonId }: { seasonId: number } = req.body;
+		const teams = await teamServices.getTeams(seasonId);
 
-		return team?.teamMemberships;
+		res.json({ data: teams });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const createTeam = async (data: { name: string; seasonId: number }) => {
+const getTeam = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		return await prisma.team.create({
-			data,
-		});
+		const teamId = Number(req.params.id);
+		const team = await teamServices.getTeam(teamId);
+		if (!team) {
+			res.status(404).json({ error: "Team not found" });
+			return;
+		}
+		res.json({ data: team });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const updateTeamById = async (teamId: number, data: { name: string }) => {
+const getMembers = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		return await prisma.team.update({
-			where: { id: teamId },
-			data,
-		});
+		const teamId = Number(req.params.id);
+		const members = await teamServices.getMembers(teamId);
+		if (!members) {
+			res.status(404).json({ error: "Team not found" });
+			return;
+		}
+		res.json(members);
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const deleteTeamById = async (id: number) => {
+const updateTeam = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		return await prisma.team.delete({
-			where: { id },
-		});
+		const teamId = Number(req.params.id);
+		const teamBody: Team = { ...req.body };
+
+		const updatedTeam = await teamServices.updateTeam(teamId, teamBody);
+
+		if (!updatedTeam) {
+			res.status(404).json({ error: "Team not found" });
+			return;
+		}
+		res.json({ message: "Team updated", data: updatedTeam });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-export {
-	getAllTeams,
-	getTeamById,
-	createTeam,
-	updateTeamById,
-	deleteTeamById,
-	getTeamMembersById,
+const deleteTeam = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const teamId = Number(req.params.id);
+		const deletedTeam = await teamServices.deleteTeam(teamId);
+		if (!deletedTeam) {
+			res.status(404).json({ error: "Team not found" });
+			return;
+		}
+		res.status(204).json();
+	} catch (err) {
+		next(err);
+	}
 };
+
+export { getTeams, getTeam, createTeam, updateTeam, deleteTeam, getMembers };
