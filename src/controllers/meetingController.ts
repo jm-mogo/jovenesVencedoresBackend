@@ -111,7 +111,7 @@ const deleteMeeting = async (
 			res.status(404).json({ message: "Meeting not found" });
 		}
 
-		res.json({ message: "Meating deleted successfully" });
+		res.status(204).json();
 	} catch (err) {
 		next(err);
 	}

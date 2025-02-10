@@ -120,7 +120,7 @@ const deleteSeason = async (
 			return;
 		}
 
-		res.status(204).json({ message: "Season deleted successfully" });
+		res.status(204).json();
 	} catch (err) {
 		next(err);
 	}

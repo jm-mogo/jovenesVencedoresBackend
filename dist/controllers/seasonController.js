@@ -82,7 +82,7 @@ const deleteSeason = async (req, res, next) => {
             res.status(404).json({ message: "Season not found" });
             return;
         }
-        res.status(204).json({ message: "Season deleted successfully" });
+        res.status(204).json();
     }
     catch (err) {
         next(err);

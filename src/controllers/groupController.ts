@@ -62,7 +62,7 @@ const deleteGroup = async (req: Request, res: Response, next: NextFunction) => {
 			res.status(404).json({ message: "Group not found" });
 			return;
 		}
-		res.status(204).json({ message: "Group deleted", data: groupDeleted });
+		res.status(204).json();
 	} catch (err) {
 		next(err);
 	}
