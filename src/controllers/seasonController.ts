@@ -1,120 +1,137 @@
-import { PrismaClient } from "@prisma/client";
 import teamMembership from "../routers/teamMembershipRouter.js";
-const prisma = new PrismaClient();
+import { NextFunction, Request, Response } from "express";
+import { seasonServices } from "../services/seasonServices.js";
+import { Season, User } from "@prisma/client";
 
-const getAllSeasons = async () => {
-	return await prisma.season.findMany();
-};
-
-const getSeasonById = async (seasonId: number) => {
+const createSeason = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
-		return await prisma.season.findUnique({
-			where: {
-				id: seasonId,
-			},
-			include: {
-				teams: true,
-				meetings: {
-					orderBy: {
-						date: "desc",
-					},
-					include: {
-						attendances: true,
-					},
-				},
-			},
+		const seasonBody: Season = { ...req.body };
+		const season = await seasonServices.createSeason(seasonBody);
+		res.status(201).json({
+			message: "Season created",
+			data: season,
 		});
 	} catch (err) {
-		return err;
-	}
-};
-const getTeensWithoutTeamInSeason = async (id: number) => {
-	try {
-		const teens = await prisma.teen.findMany({
-			where: {
-				teamMemberships: {
-					none: {
-						seasonId: id,
-					},
-				},
-			},
-		});
-		return teens;
-	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const getTeamsBySeasonId = async (id: number) => {
+const getSeasons = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const season = await prisma.season.findUnique({
-			where: { id },
-			include: {
-				teams: true,
-			},
-		});
+		const userAuth: Partial<User> = { ...req.user };
+		if (!userAuth.groupId) {
+			res.status(401).json("Unauthorized");
+			return;
+		}
 
-		const teamsId = season?.teams.map((team) => team.id);
+		const seasons = await seasonServices.getSeasons(userAuth.groupId);
 
-		const teams = await prisma.team.findMany({
-			where: {
-				id: { in: teamsId },
-			},
-			include: {
-				points: true,
-				teamMemberships: true,
-			},
-		});
-
-		return teams;
+		res.json({ data: seasons });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const createSeason = async (name: string) => {
+const getSeason = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		return await prisma.season.create({
-			data: {
-				name: name,
-			},
-		});
+		const seasonId: number = Number(req.params.id);
+
+		const season = await seasonServices.getSeason(seasonId);
+
+		if (!season) {
+			res.status(404).json({ message: "Season not found" });
+			return;
+		}
+
+		res.json(season);
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const deleteSeasonById = async (seasonId: number) => {
+const getTeamsInSeason = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
-		return await prisma.season.delete({
-			where: {
-				id: seasonId,
-			},
-		});
+		const seasonId: number = Number(req.params.id);
+
+		const teams = await seasonServices.getTeamsInSeason(seasonId);
+
+		res.json({ data: teams });
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const updateSeasonById = async (seasonId: number, data: { name: string }) => {
+const getTeensNotInSeason = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
-		return await prisma.season.update({
-			where: {
-				id: seasonId,
-			},
-			data: data,
+		const seasonId: number = Number(req.params.id);
+		const teens = await seasonServices.getTeensNotInSeason(seasonId);
+		res.json({ data: teens });
+	} catch (err) {
+		next(err);
+	}
+};
+
+const updateSeason = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const seasonBody = { ...req.body };
+
+		const seasonId: number = Number(req.params.id);
+		const seasonUpdated = await seasonServices.updateSeason(
+			seasonId,
+			seasonBody
+		);
+
+		res.status(200).json({
+			message: "Season updated",
+			data: seasonUpdated,
 		});
 	} catch (err) {
-		return err;
+		next(err);
+	}
+};
+
+const deleteSeason = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const seasonId: number = Number(req.params.id);
+		const seasonDeleted = await seasonServices.deleteSeason(seasonId);
+
+		if (!seasonDeleted) {
+			res.status(404).json({ message: "Season not found" });
+			return;
+		}
+
+		res.status(204).json({ message: "Season deleted successfully" });
+	} catch (err) {
+		next(err);
 	}
 };
 
 export {
-	getAllSeasons,
-	getSeasonById,
 	createSeason,
-	deleteSeasonById,
-	updateSeasonById,
-	getTeamsBySeasonId,
-	getTeensWithoutTeamInSeason,
+	getSeasons,
+	getSeason,
+	getTeamsInSeason,
+	getTeensNotInSeason,
+	updateSeason,
+	deleteSeason,
 };

@@ -2,8 +2,6 @@ import { PrismaClient, Team } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { teamServices } from "../services/teamservices.js";
 
-const prisma = new PrismaClient();
-
 const createTeam = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const teamBody: Team = { ...req.body };

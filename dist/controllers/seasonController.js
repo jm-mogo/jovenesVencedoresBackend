@@ -1,108 +1,92 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-const getAllSeasons = async () => {
-    return await prisma.season.findMany();
-};
-const getSeasonById = async (seasonId) => {
+import { seasonServices } from "../services/seasonServices.js";
+const createSeason = async (req, res, next) => {
     try {
-        return await prisma.season.findUnique({
-            where: {
-                id: seasonId,
-            },
-            include: {
-                teams: true,
-                meetings: {
-                    orderBy: {
-                        date: "desc",
-                    },
-                    include: {
-                        attendances: true,
-                    },
-                },
-            },
+        const seasonBody = { ...req.body };
+        const season = await seasonServices.createSeason(seasonBody);
+        res.status(201).json({
+            message: "Season created",
+            data: season,
         });
     }
     catch (err) {
-        return err;
+        next(err);
     }
 };
-const getTeensWithoutTeamInSeason = async (id) => {
+const getSeasons = async (req, res, next) => {
     try {
-        const teens = await prisma.teen.findMany({
-            where: {
-                teamMemberships: {
-                    none: {
-                        seasonId: id,
-                    },
-                },
-            },
-        });
-        return teens;
+        const userAuth = { ...req.user };
+        if (!userAuth.groupId) {
+            res.status(401).json("Unauthorized");
+            return;
+        }
+        const seasons = await seasonServices.getSeasons(userAuth.groupId);
+        res.json({ data: seasons });
     }
     catch (err) {
-        return err;
+        next(err);
     }
 };
-const getTeamsBySeasonId = async (id) => {
+const getSeason = async (req, res, next) => {
     try {
-        const season = await prisma.season.findUnique({
-            where: { id },
-            include: {
-                teams: true,
-            },
-        });
-        const teamsId = season?.teams.map((team) => team.id);
-        const teams = await prisma.team.findMany({
-            where: {
-                id: { in: teamsId },
-            },
-            include: {
-                points: true,
-                teamMemberships: true,
-            },
-        });
-        return teams;
+        const seasonId = Number(req.params.id);
+        const season = await seasonServices.getSeason(seasonId);
+        if (!season) {
+            res.status(404).json({ message: "Season not found" });
+            return;
+        }
+        res.json(season);
     }
     catch (err) {
-        return err;
+        next(err);
     }
 };
-const createSeason = async (name) => {
+const getTeamsInSeason = async (req, res, next) => {
     try {
-        return await prisma.season.create({
-            data: {
-                name: name,
-            },
-        });
+        const seasonId = Number(req.params.id);
+        const teams = await seasonServices.getTeamsInSeason(seasonId);
+        res.json({ data: teams });
     }
     catch (err) {
-        return err;
+        next(err);
     }
 };
-const deleteSeasonById = async (seasonId) => {
+const getTeensNotInSeason = async (req, res, next) => {
     try {
-        return await prisma.season.delete({
-            where: {
-                id: seasonId,
-            },
+        const seasonId = Number(req.params.id);
+        const teens = await seasonServices.getTeensNotInSeason(seasonId);
+        res.json({ data: teens });
+    }
+    catch (err) {
+        next(err);
+    }
+};
+const updateSeason = async (req, res, next) => {
+    try {
+        const seasonBody = { ...req.body };
+        const seasonId = Number(req.params.id);
+        const seasonUpdated = await seasonServices.updateSeason(seasonId, seasonBody);
+        res.status(200).json({
+            message: "Season updated",
+            data: seasonUpdated,
         });
     }
     catch (err) {
-        return err;
+        next(err);
     }
 };
-const updateSeasonById = async (seasonId, data) => {
+const deleteSeason = async (req, res, next) => {
     try {
-        return await prisma.season.update({
-            where: {
-                id: seasonId,
-            },
-            data: data,
-        });
+        const seasonId = Number(req.params.id);
+        const seasonDeleted = await seasonServices.deleteSeason(seasonId);
+        if (!seasonDeleted) {
+            res.status(404).json({ message: "Season not found" });
+            return;
+        }
+        res.status(204).json({ message: "Season deleted successfully" });
     }
     catch (err) {
-        return err;
+        next(err);
     }
 };
-export { getAllSeasons, getSeasonById, createSeason, deleteSeasonById, updateSeasonById, getTeamsBySeasonId, getTeensWithoutTeamInSeason, };
+export { createSeason, getSeasons, getSeason, getTeamsInSeason, getTeensNotInSeason, updateSeason, deleteSeason, };
 //# sourceMappingURL=seasonController.js.map
