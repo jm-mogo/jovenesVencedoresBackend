@@ -40,14 +40,10 @@ const deleteUser = async (id) => {
     return user;
 };
 const checkAuthorization = async (userAuth, roles) => {
-    if (!userAuth.username) {
+    if (!userAuth.role) {
         return false;
     }
-    const user = await getUser(userAuth.username);
-    if (!user) {
-        return false;
-    }
-    if (roles.includes(user.role)) {
+    if (roles.includes(userAuth.role)) {
         return true;
     }
     return false;

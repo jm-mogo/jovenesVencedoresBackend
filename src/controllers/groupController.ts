@@ -41,14 +41,14 @@ const updateGroup = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const id = Number(req.params.id);
 		const groupBody: Partial<Group> = { ...req.body };
-		const updatedGroup = await groupServices.updateGroup(id, groupBody);
+		const groupUpdated = await groupServices.updateGroup(id, groupBody);
 
-		if (!updatedGroup) {
+		if (!groupUpdated) {
 			res.status(404).json({ message: "Group not found" });
 			return;
 		}
 
-		res.status(200).json({ message: "Group updated", data: updatedGroup });
+		res.status(200).json({ message: "Group updated", data: groupUpdated });
 	} catch (err) {
 		next(err);
 	}

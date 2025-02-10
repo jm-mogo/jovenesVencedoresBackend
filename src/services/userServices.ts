@@ -51,16 +51,11 @@ const deleteUser = async (id: number) => {
 };
 
 const checkAuthorization = async (userAuth: Partial<User>, roles: Role[]) => {
-	if (!userAuth.username) {
-		return false;
-	}
-	const user = await getUser(userAuth.username);
-
-	if (!user) {
+	if (!userAuth.role) {
 		return false;
 	}
 
-	if (roles.includes(user.role)) {
+	if (roles.includes(userAuth.role)) {
 		return true;
 	}
 

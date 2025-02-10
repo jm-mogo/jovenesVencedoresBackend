@@ -1,77 +1,104 @@
-import { Gender, PrismaClient, Teen } from "@prisma/client";
+import { Teen, User } from "@prisma/client";
+import { NextFunction, Request, Response } from "express";
+import { teenServices } from "../services/teenServices.js";
 
-const prisma = new PrismaClient();
-
-const getAllTeens = async () => {
-	const teens = await prisma.teen.findMany({
-		// select: {
-		//     firstName: true,
-		//     lastName: true,
-		//     id: true,
-		// },
-	});
-	return teens;
-};
-
-const getTeenById = async (teenId: number) => {
+const createTeen = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		return await prisma.teen.findUnique({
-			where: {
-				id: teenId,
-			},
-			include: {
-				parent: true,
-			},
+		const userAuth: Partial<User> = { ...req.user };
+		if (!userAuth.groupId) {
+			res.status(401).json("Unauthorized");
+			return;
+		}
+
+		const teenBody: Teen = { ...req.body };
+		teenBody.dateOfBirth = new Date(teenBody.dateOfBirth);
+		teenBody.groupId = userAuth.groupId;
+
+		const teen = await teenServices.createTeen(teenBody);
+
+		res.status(201).json({
+			messsage: "Teen created",
+			data: teen,
 		});
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const createTeen = async (data: Teen) => {
+const getTeens = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		return await prisma.teen.create({
-			data,
+		const userAuth: Partial<User> = { ...req.user };
+		if (!userAuth.groupId) {
+			res.status(401).json("Unauthorized");
+			return;
+		}
+
+		const teens = await teenServices.getTeens(userAuth.groupId);
+		res.json({ data: teens });
+	} catch (err) {
+		next(err);
+	}
+};
+
+const getTeen = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const teenId: number = Number(req.params.id);
+
+		const userAuth: Partial<User> = { ...req.user };
+		const hasAccess = await teenServices.canAccessTeen(userAuth, teenId);
+
+		if (!hasAccess) {
+			res.status(403).json("Forbidden");
+			return;
+		}
+
+		const teen = await teenServices.getTeen(teenId);
+
+		if (!teen) {
+			res.status(404).json("Teen not found");
+			return;
+		}
+
+		//Check if this user can acces this teen
+
+		res.json(teen);
+	} catch (err) {
+		next(err);
+	}
+};
+
+const updateTeen = async (req: Request, res: Response, next: NextFunction) => {
+	const teenId: number = Number(req.params.id);
+	try {
+		const teenUpdated = await teenServices.updateTeen(teenId, req.body);
+		res.status(200).json({
+			message: "Teen updated",
+			teen: teenUpdated,
 		});
 	} catch (err) {
-		return err;
+		next(err);
 	}
 };
 
-const updateTeenById = async (
-	teenId: number,
-	data: {
-		fiirstName: string;
-		lastName: string;
-		dateOfBirth: Date;
-		gender: Gender;
-		phoneNumber: string;
-		addres: string;
-		parentId: number;
-	}
-) => {
+const deleteTeen = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		return await prisma.teen.update({
-			where: {
-				id: teenId,
-			},
-			data,
-		});
+		const teenId: number = Number(req.params.id);
+
+		//Check if this user can acces this teen
+		const userAuth: Partial<User> = { ...req.user };
+		const hasAccess = await teenServices.canAccessTeen(userAuth, teenId);
+
+		if (!hasAccess) {
+			res.status(403).json("Forbidden");
+			return;
+		}
+
+		await teenServices.deleteTeen(teenId);
+
+		res.status(204).json();
 	} catch (err) {
-		return err;
+		res.status(500).json({ message: "Server error" });
 	}
 };
 
-const deleteTeenById = async (teenId: number) => {
-	try {
-		return await prisma.teen.delete({
-			where: {
-				id: teenId,
-			},
-		});
-	} catch (err) {
-		return err;
-	}
-};
-
-export { getAllTeens, getTeenById, createTeen, deleteTeenById, updateTeenById };
+export { getTeens, getTeen, createTeen, deleteTeen, updateTeen };

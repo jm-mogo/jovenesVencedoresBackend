@@ -24,17 +24,16 @@ app.use(express.json());
 app.use(cors());
 app.use(passport.initialize());
 
+app.use("/users", userRouter);
+app.use("/groups", groupRouter);
 app.use("/teens", teenRouter);
 app.use("/parents", parentRouter);
 app.use("/seasons", seasonRouter);
 app.use("/teams", teamRouter);
 app.use("/teamMemberships", teamMembership);
 app.use("/meetings", meetingRouter);
-app.use("/pointRecords", pointRecordRouter);
 app.use("/attendances", attendancesRouter);
 app.use("/points", pointRecordRouter);
-app.use("/groups", groupRouter);
-app.use("/users", userRouter);
 
 app.use(errorMiddleware);
 
