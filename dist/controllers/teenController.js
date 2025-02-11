@@ -47,7 +47,6 @@ const getTeen = async (req, res, next) => {
             res.status(404).json("Teen not found");
             return;
         }
-        //Check if this user can acces this teen
         res.json(teen);
     }
     catch (err) {

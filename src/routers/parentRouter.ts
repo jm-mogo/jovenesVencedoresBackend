@@ -1,59 +1,43 @@
 import { Router } from "express";
 import {
-    createParent,
-    deleteParentById,
-    getAllParents,
-    getParentById,
-    updateParentById,
+	createParent,
+	deleteParent,
+	getParents,
+	getParent,
+	updateParent,
 } from "../controllers/parentController.js";
+import passport from "passport";
+import {
+	validateAuthorization,
+	validateData,
+} from "../middlewares/validationMiddleware.js";
+import {
+	parentCreateSchema,
+	parentUpdateSchema,
+} from "../schemas/parentSchemas.js";
 
 const parentRouter = Router();
 
-parentRouter.get("/", async (req, res) => {
-    const parents = await getAllParents();
-    res.json(parents);
-});
+parentRouter.use(passport.authenticate("jwt", { session: false }));
 
-parentRouter.get("/:id", async (req, res) => {
-    const parentId: number = Number(req.params.id);
-    const parent = await getParentById(parentId);
-    res.json(parent);
-});
+parentRouter.post(
+	"/",
+	validateAuthorization("admin"),
+	validateData(parentCreateSchema),
+	createParent
+);
 
-parentRouter.post("/", async (req, res) => {
-    try {
-        const newParent = await createParent(req.body);
+parentRouter.get("/", getParents);
 
-        res.status(201).json({
-            message: "Parent created successfully",
-            parent: newParent,
-        });
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
-});
+parentRouter.get("/:id", getParent);
 
-parentRouter.put("/:id", async (req, res) => {
-    const parentId: number = Number(req.params.id);
-    try {
-        const parentUpdated = await updateParentById(parentId, req.body);
-        res.status(200).json({
-            message: "updated successfully",
-            parent: parentUpdated,
-        });
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
-});
+parentRouter.put(
+	"/:id",
+	validateAuthorization("admin"),
+	validateData(parentUpdateSchema),
+	updateParent
+);
 
-parentRouter.delete("/:id", async (req, res) => {
-    const parentId: number = Number(req.params.id);
-    try {
-        await deleteParentById(parentId);
-        res.status(204).json({ message: "Parent deleted succesfully" });
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
-});
+parentRouter.delete("/:id", validateAuthorization("admin"), deleteParent);
 
 export default parentRouter;

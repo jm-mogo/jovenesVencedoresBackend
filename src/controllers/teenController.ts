@@ -59,8 +59,6 @@ const getTeen = async (req: Request, res: Response, next: NextFunction) => {
 			return;
 		}
 
-		//Check if this user can acces this teen
-
 		res.json(teen);
 	} catch (err) {
 		next(err);
