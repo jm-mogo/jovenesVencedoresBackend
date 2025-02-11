@@ -1,5 +1,9 @@
 import passport from "passport";
-import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import {
+	Strategy as JwtStrategy,
+	ExtractJwt,
+	StrategyOptions,
+} from "passport-jwt";
 import { PrismaClient } from "@prisma/client";
 import fs from "fs"; // If reading from file
 
@@ -10,7 +14,7 @@ const privateKey = fs.readFileSync("./private.pem", "utf8");
 // Get the public key (from file)
 const publicKey = fs.readFileSync("./public.pem", "utf8");
 
-const jwtOptions = {
+const jwtOptions: StrategyOptions = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 	secretOrKey: publicKey, // Use the PUBLIC key for verification!
 	algorithms: ["RS256"], // VERY IMPORTANT: Specify the algorithm

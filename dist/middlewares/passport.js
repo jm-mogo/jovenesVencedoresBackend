@@ -1,5 +1,5 @@
 import passport from "passport";
-import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import { Strategy as JwtStrategy, ExtractJwt, } from "passport-jwt";
 import { PrismaClient } from "@prisma/client";
 import fs from "fs"; // If reading from file
 const prisma = new PrismaClient();
