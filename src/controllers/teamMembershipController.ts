@@ -1,28 +1,43 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, TeamMembership } from "@prisma/client";
+import { Request, Response, NextFunction } from "express";
+import { teamMembershipServices } from "../services/teamMembershipServices.js";
+
 const prisma = new PrismaClient();
 
-const createTeamMembership = async (data: {
-    teenId: number;
-    teamId: number;
-    seasonId: number;
-}) => {
-    try {
-        return await prisma.teamMembership.create({ data });
-    } catch (err) {
-        return err;
-    }
+const createTeamMembership = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const teamMembershipBody: TeamMembership = { ...req.body };
+
+		const teamMembership =
+			await teamMembershipServices.createTeamMembership(
+				teamMembershipBody
+			);
+
+		res.status(201).json({
+			message: "Team membership created",
+			data: teamMembership,
+		});
+	} catch (err) {
+		next(err);
+	}
 };
 
-const deleteTeamMembershipById = async (teamMembershipId: number) => {
-    try {
-        await prisma.teamMembership.delete({
-            where: {
-                id: teamMembershipId,
-            },
-        });
-    } catch (err) {
-        err;
-    }
+const deleteTeamMembership = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const teamMembershipId = Number(req.params.id);
+		await teamMembershipServices.deleteTeamMembershipById(teamMembershipId);
+		res.status(204).json({ message: "Team membership deleted" });
+	} catch (err) {
+		next(err);
+	}
 };
 
-export { createTeamMembership, deleteTeamMembershipById };
+export { createTeamMembership, deleteTeamMembership };

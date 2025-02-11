@@ -1,24 +1,28 @@
 import { PrismaClient } from "@prisma/client";
+import { teamMembershipServices } from "../services/teamMembershipServices.js";
 const prisma = new PrismaClient();
-const createTeamMembership = async (data) => {
+const createTeamMembership = async (req, res, next) => {
     try {
-        return await prisma.teamMembership.create({ data });
-    }
-    catch (err) {
-        return err;
-    }
-};
-const deleteTeamMembershipById = async (teamMembershipId) => {
-    try {
-        await prisma.teamMembership.delete({
-            where: {
-                id: teamMembershipId,
-            },
+        const teamMembershipBody = { ...req.body };
+        const teamMembership = await teamMembershipServices.createTeamMembership(teamMembershipBody);
+        res.status(201).json({
+            message: "Team membership created",
+            data: teamMembership,
         });
     }
     catch (err) {
-        err;
+        next(err);
     }
 };
-export { createTeamMembership, deleteTeamMembershipById };
+const deleteTeamMembership = async (req, res, next) => {
+    try {
+        const teamMembershipId = Number(req.params.id);
+        await teamMembershipServices.deleteTeamMembershipById(teamMembershipId);
+        res.status(204).json({ message: "Team membership deleted" });
+    }
+    catch (err) {
+        next(err);
+    }
+};
+export { createTeamMembership, deleteTeamMembership };
 //# sourceMappingURL=teamMembershipController.js.map
