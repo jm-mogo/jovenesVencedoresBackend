@@ -1,0 +1,1 @@
+{"version":3,"file":"attendanceSchemas.js","sourceRoot":"","sources":["../../src/schemas/attendanceSchemas.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,CAAC,EAAE,MAAM,KAAK,CAAC;AAExB,MAAM,CAAC,MAAM,gBAAgB,GAAG,CAAC;KAC/B,MAAM,CAAC;IACP,SAAS,EAAE,CAAC,CAAC,MAAM,EAAE;IACrB,gBAAgB,EAAE,CAAC,CAAC,MAAM,EAAE;CAC5B,CAAC;KACD,MAAM,EAAE,CAAC"}

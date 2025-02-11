@@ -113,7 +113,6 @@ model Attendance {
   meetingId Int
   teamMembership TeamMembership @relation(fields: teamMembershipId, references: [id])
   teamMembershipId Int
-  present Boolean
 }
 
 

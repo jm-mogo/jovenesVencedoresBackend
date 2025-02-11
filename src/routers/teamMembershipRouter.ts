@@ -12,19 +12,17 @@ import { teamMembershipSchema } from "../schemas/teamMembershipSchemas.js";
 
 const teamMembership = Router();
 
-teamMembership.use(passport.authenticate("jwt", { session: false }));
+teamMembership.use(
+	passport.authenticate("jwt", { session: false }),
+	validateAuthorization("admin")
+);
 
 teamMembership.post(
 	"/",
-	validateAuthorization("admin"),
 	validateData(teamMembershipSchema),
 	createTeamMembership
 );
 
-teamMembership.delete(
-	"/:id",
-	validateAuthorization("admin"),
-	deleteTeamMembership
-);
+teamMembership.delete("/:id", deleteTeamMembership);
 
 export default teamMembership;

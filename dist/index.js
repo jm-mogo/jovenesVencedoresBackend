@@ -7,7 +7,7 @@ import teamMembership from "./routers/teamMembershipRouter.js";
 import meetingRouter from "./routers/meetingRouter.js";
 import pointRecordRouter from "./routers/pointRecordRouter.js";
 import cors from "cors";
-import attendancesRouter from "./routers/attendaceRouter.js";
+import attendancesRouter from "./routers/attendanceRouter.js";
 import passport from "./middlewares/passport.js";
 import userRouter from "./routers/userRouter.js";
 import groupRouter from "./routers/groupRouter.js";
