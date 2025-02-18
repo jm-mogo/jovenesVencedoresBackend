@@ -1,7 +1,13 @@
 import { seasonServices } from "../services/seasonServices.js";
 const createSeason = async (req, res, next) => {
     try {
+        const userAuth = { ...req.user };
+        if (!userAuth.groupId) {
+            res.status(401).json("Unauthorized");
+            return;
+        }
         const seasonBody = { ...req.body };
+        seasonBody.groupId = userAuth.groupId;
         const season = await seasonServices.createSeason(seasonBody);
         res.status(201).json({
             message: "Season created",

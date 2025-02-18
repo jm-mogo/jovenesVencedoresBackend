@@ -9,7 +9,15 @@ const createSeason = async (
 	next: NextFunction
 ) => {
 	try {
+		const userAuth: Partial<User> = { ...req.user };
+		if (!userAuth.groupId) {
+			res.status(401).json("Unauthorized");
+			return;
+		}
+
 		const seasonBody: Season = { ...req.body };
+		seasonBody.groupId = userAuth.groupId;
+
 		const season = await seasonServices.createSeason(seasonBody);
 		res.status(201).json({
 			message: "Season created",
