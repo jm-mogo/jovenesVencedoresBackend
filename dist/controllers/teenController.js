@@ -47,7 +47,7 @@ const getTeen = async (req, res, next) => {
             res.status(404).json("Teen not found");
             return;
         }
-        res.json(teen);
+        res.json({ data: teen });
     }
     catch (err) {
         next(err);
@@ -59,7 +59,7 @@ const updateTeen = async (req, res, next) => {
         const teenUpdated = await teenServices.updateTeen(teenId, req.body);
         res.json({
             message: "Teen updated",
-            teen: teenUpdated,
+            data: teenUpdated,
         });
     }
     catch (err) {

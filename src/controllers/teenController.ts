@@ -59,7 +59,7 @@ const getTeen = async (req: Request, res: Response, next: NextFunction) => {
 			return;
 		}
 
-		res.json(teen);
+		res.json({ data: teen });
 	} catch (err) {
 		next(err);
 	}
@@ -71,7 +71,7 @@ const updateTeen = async (req: Request, res: Response, next: NextFunction) => {
 		const teenUpdated = await teenServices.updateTeen(teenId, req.body);
 		res.json({
 			message: "Teen updated",
-			teen: teenUpdated,
+			data: teenUpdated,
 		});
 	} catch (err) {
 		next(err);

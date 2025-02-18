@@ -41,7 +41,7 @@ const getMembers = async (req, res, next) => {
             res.status(404).json({ error: "Team not found" });
             return;
         }
-        res.json(members);
+        res.json({ data: members });
     }
     catch (err) {
         next(err);
