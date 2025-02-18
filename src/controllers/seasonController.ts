@@ -55,7 +55,7 @@ const getSeason = async (req: Request, res: Response, next: NextFunction) => {
 			return;
 		}
 
-		res.json(season);
+		res.json({ data: season });
 	} catch (err) {
 		next(err);
 	}

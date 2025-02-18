@@ -40,7 +40,7 @@ const getSeason = async (req, res, next) => {
             res.status(404).json({ message: "Season not found" });
             return;
         }
-        res.json(season);
+        res.json({ data: season });
     }
     catch (err) {
         next(err);
