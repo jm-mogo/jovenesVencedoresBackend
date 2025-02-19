@@ -13,6 +13,7 @@ import userRouter from "./routers/userRouter.js";
 import groupRouter from "./routers/groupRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
 import { validateAuthorization } from "./middlewares/validationMiddleware.js";
+import myAccountRouter from "./routers/myAccountRouter.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/teamMemberships", teamMembership);
 app.use("/meetings", meetingRouter);
 app.use("/attendances", attendancesRouter);
 app.use("/points", pointRecordRouter);
+app.use("/myaccount", myAccountRouter);
 
 app.use(errorMiddleware);
 

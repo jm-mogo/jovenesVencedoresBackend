@@ -21,4 +21,10 @@ export const userUpdateSchema = z
     role: z.nativeEnum(Role).optional(),
 })
     .strict();
+export const userUpdatePasswordSchema = z
+    .object({
+    oldPassword: z.string().min(6),
+    newPassword: z.string().min(6),
+})
+    .strict();
 //# sourceMappingURL=userSchemas.js.map
