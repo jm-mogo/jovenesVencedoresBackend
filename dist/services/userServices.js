@@ -54,7 +54,12 @@ const checkPassword = async (userBody, user) => {
 };
 const generateToken = (user) => {
     const privateKey = fs.readFileSync("./private.pem", "utf8");
-    let token = jwt.sign({ sub: user.id, username: user.username, role: user.role }, privateKey, {
+    let token = jwt.sign({
+        sub: user.id,
+        username: user.username,
+        role: user.role,
+        groupId: user.groupId,
+    }, privateKey, {
         algorithm: "RS256",
     });
     token = "Bearer " + token;

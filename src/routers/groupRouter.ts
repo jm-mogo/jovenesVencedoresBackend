@@ -18,19 +18,26 @@ import {
 
 const groupRouter = Router();
 
-groupRouter.use(
-	passport.authenticate("jwt", { session: false }),
-	validateAuthorization("primaryOwner")
+groupRouter.use(passport.authenticate("jwt", { session: false }));
+
+groupRouter.post(
+	"/",
+	validateAuthorization("primaryOwner"),
+	validateData(groupCreateSchema),
+	createGroup
 );
 
-groupRouter.post("/", validateData(groupCreateSchema), createGroup);
+groupRouter.get("/", validateAuthorization("primaryOwner"), getGroups);
 
-groupRouter.get("/", getGroups);
+groupRouter.get("/:id", validateAuthorization("owner"), getGroup);
 
-groupRouter.get("/:id", getGroup);
+groupRouter.put(
+	"/:id",
+	validateAuthorization("primaryOwner"),
+	validateData(groupUpdateSchema),
+	updateGroup
+);
 
-groupRouter.put("/:id", validateData(groupUpdateSchema), updateGroup);
-
-groupRouter.delete("/:id", deleteGroup);
+groupRouter.delete("/:id", validateAuthorization("primaryOwner"), deleteGroup);
 
 export default groupRouter;
