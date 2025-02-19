@@ -2,13 +2,17 @@ import { Router } from "express";
 import {
 	createTeamMembership,
 	deleteTeamMembership,
+	updateTeamMembership,
 } from "../controllers/teamMembershipController.js";
 import passport from "passport";
 import {
 	validateAuthorization,
 	validateData,
 } from "../middlewares/validationMiddleware.js";
-import { teamMembershipSchema } from "../schemas/teamMembershipSchemas.js";
+import {
+	teamMembershipSchema,
+	teamMembershipSchemaUpdate,
+} from "../schemas/teamMembershipSchemas.js";
 
 const teamMembership = Router();
 
@@ -21,6 +25,12 @@ teamMembership.post(
 	"/",
 	validateData(teamMembershipSchema),
 	createTeamMembership
+);
+
+teamMembership.put(
+	"/:id",
+	validateData(teamMembershipSchemaUpdate),
+	updateTeamMembership
 );
 
 teamMembership.delete("/:id", deleteTeamMembership);

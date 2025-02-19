@@ -8,7 +8,21 @@ const createTeamMembership = async (teamMembershipBody: TeamMembership) => {
 	return teamMembership;
 };
 
+const updateTeamMembership = async (
+	teamMembershipId: number,
+	teamMembershipBody: TeamMembership
+) => {
+	const teamMembership = await prisma.teamMembership.update({
+		where: {
+			id: teamMembershipId,
+		},
+		data: teamMembershipBody,
+	});
+	return teamMembership;
+};
+
 const deleteTeamMembershipById = async (teamMembershipId: number) => {
+	await prisma.attendance.deleteMany({ where: { teamMembershipId } });
 	await prisma.teamMembership.delete({
 		where: {
 			id: teamMembershipId,
@@ -19,4 +33,5 @@ const deleteTeamMembershipById = async (teamMembershipId: number) => {
 export const teamMembershipServices = {
 	createTeamMembership,
 	deleteTeamMembershipById,
+	updateTeamMembership,
 };

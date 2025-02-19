@@ -7,3 +7,9 @@ export const teamMembershipSchema = z
 		seasonId: z.number(),
 	})
 	.strict();
+
+export const teamMembershipSchemaUpdate = z
+	.object({
+		teamId: z.number(),
+	})
+	.strict();
