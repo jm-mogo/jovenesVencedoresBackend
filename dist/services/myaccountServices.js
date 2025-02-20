@@ -20,16 +20,17 @@ const updateMyUsername = async (userId, username) => {
     });
     return user;
 };
-const updateMyPassword = async (userId, oldPassword, newPasswrod) => {
+const updateMyPassword = async (userId, oldPassword, newPassword) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user)
-        return;
+        return null;
     const passwordMatch = await bcryptjs.compare(oldPassword, user.password);
     if (!passwordMatch)
-        return;
+        return null;
+    newPassword = await bcryptjs.hash(newPassword, 10);
     const updatedUser = await prisma.user.update({
         where: { id: userId },
-        data: { password: newPasswrod },
+        data: { password: newPassword },
     });
     return updatedUser;
 };

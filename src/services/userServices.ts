@@ -70,14 +70,20 @@ const checkPassword = async (userBody: User, user: User): Promise<boolean> => {
 	return passwordMatch;
 };
 
-const generateToken = (user: User) => {
+const generateToken = async (user: User) => {
+	const group = await prisma.group.findUnique({
+		where: { id: user.groupId },
+	});
+
 	const privateKey = fs.readFileSync("./private.pem", "utf8");
+
 	let token = jwt.sign(
 		{
 			sub: user.id,
 			username: user.username,
 			role: user.role,
 			groupId: user.groupId,
+			groupName: group?.name,
 		},
 		privateKey,
 		{

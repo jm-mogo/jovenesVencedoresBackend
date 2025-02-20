@@ -40,7 +40,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 			return;
 		}
 
-		const token = userServices.generateToken(user);
+		const token = await userServices.generateToken(user);
 
 		const userNoPassword: Partial<User> = { ...user };
 		delete userNoPassword.password;

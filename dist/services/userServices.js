@@ -52,13 +52,17 @@ const checkPassword = async (userBody, user) => {
     const passwordMatch = await bcryptjs.compare(userBody.password, user.password);
     return passwordMatch;
 };
-const generateToken = (user) => {
+const generateToken = async (user) => {
+    const group = await prisma.group.findUnique({
+        where: { id: user.groupId },
+    });
     const privateKey = fs.readFileSync("./private.pem", "utf8");
     let token = jwt.sign({
         sub: user.id,
         username: user.username,
         role: user.role,
         groupId: user.groupId,
+        groupName: group?.name,
     }, privateKey, {
         algorithm: "RS256",
     });

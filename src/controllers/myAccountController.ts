@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { myAccountServices } from "../services/myaccountServices.js";
+import { json } from "stream/consumers";
 
 const getMyAccount = async (
 	req: Request,
@@ -73,6 +74,11 @@ const updatePassword = async (
 			userBody.oldPassword,
 			userBody.newPassword
 		);
+
+		if (!user) {
+			res.status(401).json("Invalid credentials");
+			return;
+		}
 
 		res.json({ data: user, message: "Password updated" });
 	} catch (err) {

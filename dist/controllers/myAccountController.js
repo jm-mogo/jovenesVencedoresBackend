@@ -42,6 +42,10 @@ const updatePassword = async (req, res, next) => {
             return;
         }
         const user = await myAccountServices.updateMyPassword(userAuth.id, userBody.oldPassword, userBody.newPassword);
+        if (!user) {
+            res.status(401).json("Invalid credentials");
+            return;
+        }
         res.json({ data: user, message: "Password updated" });
     }
     catch (err) {

@@ -26,7 +26,7 @@ const loginUser = async (req, res, next) => {
             res.status(401).json({ message: "Invalid credentials" });
             return;
         }
-        const token = userServices.generateToken(user);
+        const token = await userServices.generateToken(user);
         const userNoPassword = { ...user };
         delete userNoPassword.password;
         res.json({ message: "Login successful", token, user: userNoPassword });
