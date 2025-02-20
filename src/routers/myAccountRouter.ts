@@ -13,22 +13,18 @@ import {
 
 const myAccountRouter = express.Router();
 
-myAccountRouter.get(
-	"/",
-	passport.authenticate("jwt", { session: false }),
-	getMyAccount
-);
+myAccountRouter.use(passport.authenticate("jwt", { session: false }));
+
+myAccountRouter.get("/", getMyAccount);
 
 myAccountRouter.put(
 	"/username",
-	passport.authenticate("jwt", { session: false }),
 	validateData(userUpdateSchema),
 	updateUsername
 );
 
 myAccountRouter.put(
 	"/password",
-	passport.authenticate("jwt", { session: false }),
 	validateData(userUpdatePasswordSchema),
 	updatePassword
 );
