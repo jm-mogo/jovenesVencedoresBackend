@@ -13,19 +13,16 @@ import userRouter from "./routers/userRouter.js";
 import groupRouter from "./routers/groupRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
 import myAccountRouter from "./routers/myAccountRouter.js";
-import { PORT, HOST, PRIVATE_KEY, PUBLIC_KEY } from "./config/config.js";
+import { PORT, HOST } from "./config/config.js";
 import "dotenv/config";
-import fs from "fs";
 const app = express();
-const privateKey = PRIVATE_KEY;
-const publicKey = PUBLIC_KEY;
-// Save keys to files (optional, if your application requires file paths)
-fs.writeFileSync("./private.pem", privateKey.replace(/\\n/g, "\n"));
-fs.writeFileSync("./public.pem", publicKey.replace(/\\n/g, "\n"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 app.use(passport.initialize());
+app.get("/", (req, res) => {
+    res.json("working");
+});
 app.use("/users", userRouter);
 app.use("/groups", groupRouter);
 app.use("/teens", teenRouter);

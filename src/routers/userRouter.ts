@@ -18,10 +18,12 @@ import passport from "passport";
 
 const userRouter = express.Router();
 
+userRouter.post("/login", validateData(userLoginSchema), loginUser);
+
 userRouter.post(
 	"/register",
 	passport.authenticate("jwt", { session: false }),
-	validateAuthorization("owner"),
+	// validateAuthorization("owner"),
 	validateData(userRegistrationSchema),
 	registerUser
 );
@@ -33,8 +35,6 @@ userRouter.put(
 	validateData(userUpdateSchema),
 	updateUser
 );
-
-userRouter.post("/login", validateData(userLoginSchema), loginUser);
 
 userRouter.delete(
 	"/:id",
