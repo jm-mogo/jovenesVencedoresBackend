@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client";
 import { PUBLIC_KEY } from "../config/config.js";
 const prisma = new PrismaClient();
 // Get the public key (from file)
-// const publicKey = fs.readFileSync("./public.pem", "utf8");
 const publicKey = PUBLIC_KEY.replace(/\\n/g, "\n");
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
