@@ -23,7 +23,6 @@ const privateKey = PRIVATE_KEY;
 const publicKey = PUBLIC_KEY;
 
 // Save keys to files (optional, if your application requires file paths)
-
 fs.writeFileSync("./private.pem", privateKey.replace(/\\n/g, "\n"));
 fs.writeFileSync("./public.pem", publicKey.replace(/\\n/g, "\n"));
 

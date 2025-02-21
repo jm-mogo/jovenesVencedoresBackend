@@ -3,6 +3,7 @@ import { PrismaClient, Role, User } from "@prisma/client";
 import fs from "fs";
 import jwt from "jsonwebtoken";
 import passport from "passport";
+import { PRIVATE_KEY } from "../config/config.js";
 
 const prisma = new PrismaClient();
 
@@ -75,7 +76,8 @@ const generateToken = async (user: User) => {
 		where: { id: user.groupId },
 	});
 
-	const privateKey = fs.readFileSync("./private.pem", "utf8");
+	// const privateKey = fs.readFileSync("./private.pem", "utf8");
+	const privateKey = PRIVATE_KEY.replace(/\\n/g, "\n");
 
 	let token = jwt.sign(
 		{

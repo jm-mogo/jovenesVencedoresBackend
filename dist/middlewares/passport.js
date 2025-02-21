@@ -1,10 +1,11 @@
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt, } from "passport-jwt";
 import { PrismaClient } from "@prisma/client";
-import fs from "fs"; // If reading from file
+import { PUBLIC_KEY } from "../config/config.js";
 const prisma = new PrismaClient();
 // Get the public key (from file)
-const publicKey = fs.readFileSync("./public.pem", "utf8");
+// const publicKey = fs.readFileSync("./public.pem", "utf8");
+const publicKey = PUBLIC_KEY.replace(/\\n/g, "\n");
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: publicKey, // Use the PUBLIC key for verification!
