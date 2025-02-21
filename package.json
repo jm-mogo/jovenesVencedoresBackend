@@ -1,5 +1,6 @@
 {
     "scripts": {
+        "start": "node ./dist/index",
         "build-w": "tsc --watch",
         "dev": "node --watch-path=./dist ./dist/index.js"
     },
