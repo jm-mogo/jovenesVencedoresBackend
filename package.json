@@ -1,8 +1,6 @@
 {
 	"scripts": {
-		"gen-private": "openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048",
-		"gen-public": "openssl rsa -pubout -in private.pem -out public.pem",
-		"migrate": "npx prisma migrate dev",
+		"migrate": "prisma migrate deploy",
 		"start": "node ./dist/index",
 		"build-w": "tsc --watch",
 		"dev": "node --watch-path=./dist ./dist/index.js"

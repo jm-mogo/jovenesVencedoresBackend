@@ -14,6 +14,7 @@ import groupRouter from "./routers/groupRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
 import myAccountRouter from "./routers/myAccountRouter.js";
 import { PORT, HOST } from "./config/config.js";
+import "dotenv/config";
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

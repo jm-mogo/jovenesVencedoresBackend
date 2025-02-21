@@ -13,7 +13,9 @@ import userRouter from "./routers/userRouter.js";
 import groupRouter from "./routers/groupRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
 import myAccountRouter from "./routers/myAccountRouter.js";
-import { PORT, HOST } from "./config/config.js";
+import { PORT, HOST, PRIVATE_KEY, PUBLIC_KEY } from "./config/config.js";
+import "dotenv/config";
+import fs from "fs";
 
 const app = express();
 
