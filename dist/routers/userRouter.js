@@ -5,7 +5,8 @@ import { loginUser, registerUser, deleteUser, updateUser, } from "../controllers
 import passport from "passport";
 const userRouter = express.Router();
 userRouter.post("/login", validateData(userLoginSchema), loginUser);
-userRouter.post("/register", passport.authenticate("jwt", { session: false }), 
+userRouter.post("/register", 
+// passport.authenticate("jwt", { session: false }),
 // validateAuthorization("owner"),
 validateData(userRegistrationSchema), registerUser);
 userRouter.put("/:id", passport.authenticate("jwt", { session: false }), validateAuthorization("owner"), validateData(userUpdateSchema), updateUser);
