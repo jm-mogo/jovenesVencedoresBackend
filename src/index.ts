@@ -12,13 +12,10 @@ import passport from "./middlewares/passport.js";
 import userRouter from "./routers/userRouter.js";
 import groupRouter from "./routers/groupRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
-import { validateAuthorization } from "./middlewares/validationMiddleware.js";
 import myAccountRouter from "./routers/myAccountRouter.js";
+import { PORT, HOST } from "./config/config.js";
 
 const app = express();
-
-const PORT: number = 8800;
-const HOST: string = "0.0.0.0";
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
