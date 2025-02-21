@@ -1,7 +1,7 @@
 import bcryptjs from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
+import fs from "fs";
 import jwt from "jsonwebtoken";
-import { PRIVATE_KEY } from "../config/config.js";
 const prisma = new PrismaClient();
 const createUser = async (userBody) => {
     const userExists = await getUser(userBody.username);
@@ -56,7 +56,7 @@ const generateToken = async (user) => {
     const group = await prisma.group.findUnique({
         where: { id: user.groupId },
     });
-    const privateKey = PRIVATE_KEY;
+    const privateKey = fs.readFileSync("./private.pem", "utf8");
     let token = jwt.sign({
         sub: user.id,
         username: user.username,
