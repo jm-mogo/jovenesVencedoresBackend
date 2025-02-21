@@ -22,8 +22,8 @@ userRouter.post("/login", validateData(userLoginSchema), loginUser);
 
 userRouter.post(
 	"/register",
-	// passport.authenticate("jwt", { session: false }),
-	// validateAuthorization("owner"),
+	passport.authenticate("jwt", { session: false }),
+	validateAuthorization("owner"),
 	validateData(userRegistrationSchema),
 	registerUser
 );
