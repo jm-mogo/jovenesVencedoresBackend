@@ -1,5 +1,6 @@
 {
 	"scripts": {
+		"build": "tsc && vite build",
 		"migrate": "prisma migrate deploy",
 		"start": "node ./dist/index",
 		"build-w": "tsc --watch",
