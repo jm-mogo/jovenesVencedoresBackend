@@ -58,8 +58,13 @@ const getTeamsInSeason = async (req, res, next) => {
 };
 const getTeensNotInSeason = async (req, res, next) => {
     try {
+        const userAuth = { ...req.user };
+        if (!userAuth.groupId) {
+            res.status(401).json("Unauthorized");
+            return;
+        }
         const seasonId = Number(req.params.id);
-        const teens = await seasonServices.getTeensNotInSeason(seasonId);
+        const teens = await seasonServices.getTeensNotInSeason(seasonId, userAuth.groupId);
         res.json({ data: teens });
     }
     catch (err) {

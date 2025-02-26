@@ -83,8 +83,17 @@ const getTeensNotInSeason = async (
 	next: NextFunction
 ) => {
 	try {
+		const userAuth: Partial<User> = { ...req.user };
+		if (!userAuth.groupId) {
+			res.status(401).json("Unauthorized");
+			return;
+		}
+
 		const seasonId: number = Number(req.params.id);
-		const teens = await seasonServices.getTeensNotInSeason(seasonId);
+		const teens = await seasonServices.getTeensNotInSeason(
+			seasonId,
+			userAuth.groupId
+		);
 		res.json({ data: teens });
 	} catch (err) {
 		next(err);

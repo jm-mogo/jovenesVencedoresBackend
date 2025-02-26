@@ -52,9 +52,10 @@ const getTeamsInSeason = async (seasonId) => {
     });
     return teams;
 };
-const getTeensNotInSeason = async (seasonId) => {
+const getTeensNotInSeason = async (seasonId, groupId) => {
     const teens = await prisma.teen.findMany({
         where: {
+            groupId: groupId,
             teamMemberships: {
                 none: {
                     seasonId: seasonId,
