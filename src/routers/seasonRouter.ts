@@ -8,7 +8,6 @@ import {
 	getTeamsInSeason,
 	getTeensNotInSeason,
 } from "../controllers/seasonController.js";
-import { setHeapSnapshotNearHeapLimit } from "v8";
 import passport from "passport";
 import {
 	validateAuthorization,
