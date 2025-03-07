@@ -14,7 +14,7 @@ import {
 	validateAuthorization,
 	validateData,
 } from "../middlewares/validationMiddleware.js";
-import { seasonSchema } from "../schemas/seasonsSchemas.js";
+import { seasonSchema, seasonUpdateSchema } from "../schemas/seasonsSchemas.js";
 
 const seasonRouter = Router();
 
@@ -38,7 +38,7 @@ seasonRouter.get("/:id/teens", getTeensNotInSeason);
 seasonRouter.put(
 	"/:id",
 	validateAuthorization("admin"),
-	validateData(seasonSchema),
+	validateData(seasonUpdateSchema),
 	updateSeason
 );
 

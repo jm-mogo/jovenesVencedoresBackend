@@ -1,4 +1,3 @@
-import teamMembership from "../routers/teamMembershipRouter.js";
 import { NextFunction, Request, Response } from "express";
 import { seasonServices } from "../services/seasonServices.js";
 import { Season, User } from "@prisma/client";

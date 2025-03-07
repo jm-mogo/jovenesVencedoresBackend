@@ -60,6 +60,7 @@ model Parent {
 model Season {
   id Int @id @default(autoincrement())
   name String
+  description String @default("")
   teams Team[]
   meetings Meeting[]
   memberships TeamMembership[]
