@@ -7,8 +7,7 @@ export const teamCreateSchema = z
     .strict();
 export const teamUpdateSchema = z
     .object({
-    name: z.string().optional(),
-    seasonId: z.number().optional(),
+    name: z.string(),
 })
     .strict();
 //# sourceMappingURL=teamSchemas.js.map
