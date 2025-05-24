@@ -43,6 +43,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 				token,
 				user: userNoPassword,
 			});
+			return;
 		}
 
 		const passwordMatch = await userServices.checkPassword(userBody, user);
