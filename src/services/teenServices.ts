@@ -47,7 +47,6 @@ const deleteTeen = async (teenId: number) => {
 			id: teenId,
 		},
 	});
-
 	return teen;
 };
 
