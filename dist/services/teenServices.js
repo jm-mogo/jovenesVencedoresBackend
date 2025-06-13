@@ -52,6 +52,20 @@ const canAccessTeen = async (userAuth, teenId) => {
     }
     return true;
 };
+const getTeensWithBirthdaysThisMonth = async (groupId) => {
+    const now = new Date();
+    const month = now.getMonth() + 1; // getMonth() is 0-based
+    const teens = await prisma.teen.findMany({
+        where: {
+            groupId: groupId,
+        },
+    });
+    const teensWithBirthdaysThisMonth = teens.filter((teen) => {
+        const birthDate = new Date(teen.dateOfBirth);
+        return birthDate.getMonth() + 1 === month; // getMonth() is 0-based
+    });
+    return teensWithBirthdaysThisMonth;
+};
 export const teenServices = {
     createTeen,
     getTeens,
@@ -59,5 +73,6 @@ export const teenServices = {
     updateTeen,
     deleteTeen,
     canAccessTeen,
+    getTeensWithBirthdaysThisMonth,
 };
 //# sourceMappingURL=teenServices.js.map

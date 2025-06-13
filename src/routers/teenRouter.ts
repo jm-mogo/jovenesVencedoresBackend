@@ -6,6 +6,7 @@ import {
 	getTeens,
 	getTeen,
 	updateTeen,
+	getTeensWithBirthdaysThisMonth,
 } from "../controllers/teenController.js";
 import passport from "passport";
 import {
@@ -26,6 +27,8 @@ teenRouter.post(
 );
 
 teenRouter.get("/", getTeens);
+
+teenRouter.get("/birthdaysThisMonth", getTeensWithBirthdaysThisMonth);
 
 teenRouter.get("/:id", getTeen);
 

@@ -83,5 +83,19 @@ const deleteTeen = async (req, res, next) => {
         res.status(500).json({ message: "Server error" });
     }
 };
-export { getTeens, getTeen, createTeen, deleteTeen, updateTeen };
+const getTeensWithBirthdaysThisMonth = async (req, res, next) => {
+    const userAuth = { ...req.user };
+    if (!userAuth.groupId) {
+        res.status(401).json("Unauthorized");
+        return;
+    }
+    try {
+        const teens = await teenServices.getTeensWithBirthdaysThisMonth(userAuth.groupId);
+        res.json({ data: teens });
+    }
+    catch (err) {
+        next(err);
+    }
+};
+export { getTeens, getTeen, createTeen, deleteTeen, updateTeen, getTeensWithBirthdaysThisMonth, };
 //# sourceMappingURL=teenController.js.map

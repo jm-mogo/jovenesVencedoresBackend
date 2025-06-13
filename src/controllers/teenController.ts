@@ -99,4 +99,32 @@ const deleteTeen = async (req: Request, res: Response, next: NextFunction) => {
 	}
 };
 
-export { getTeens, getTeen, createTeen, deleteTeen, updateTeen };
+const getTeensWithBirthdaysThisMonth = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const userAuth: Partial<User> = { ...req.user };
+	if (!userAuth.groupId) {
+		res.status(401).json("Unauthorized");
+		return;
+	}
+
+	try {
+		const teens = await teenServices.getTeensWithBirthdaysThisMonth(
+			userAuth.groupId
+		);
+		res.json({ data: teens });
+	} catch (err) {
+		next(err);
+	}
+};
+
+export {
+	getTeens,
+	getTeen,
+	createTeen,
+	deleteTeen,
+	updateTeen,
+	getTeensWithBirthdaysThisMonth,
+};
